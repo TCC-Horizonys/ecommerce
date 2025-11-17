@@ -1,0 +1,49 @@
+﻿@model IEnumerable<ecommerce.Models.Produto>
+@{
+    int pagIndex = (int)ViewData["PagIndex"];
+    int totalPag = (int)ViewData["TotalPag"];
+}
+
+
+<h2 class="pb-4 text-center">Produtos</h2>
+
+<div class="row mb-5 g-3">
+    @foreach (var produto in Model)
+    {
+        <div class="col-lg-3 col-md-6">
+            <div class="rounded border shadow p-3 text-center h-100">
+                <img src="@Url.Content("~/img/" + produto.Imagens.FirstOrDefault()?.Url)" class="img-fluid" alt="..."
+                     style="height: 180px; object-fit: contain" />
+                <hr />
+                <h5 class="py-2">@produto.Nome</h5>
+                <p>
+                    Nome: @produto.Nome, Categoria: @produto.Categoria
+                </p>
+                <h4 class="mb-3">R$ @produto.Preco.ToString("F2")</h4>
+                
+<form asp-controller="Carrinho" asp-action="Adicionar" method="post" class="d-inline">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="produtoId" value="@produto.Id" />
+    <input type="hidden" name="quantidade" value="1" />
+    <input type="hidden" name="next" value="index" />  @* ou "infos" *@
+    <button type="submit" class="btn btn-warning btn-sm mb-2">
+        Adicionar ao Carrinho <i class="bi bi-cart4"></i>
+    </button>
+</form>
+
+            </div>
+        </div>
+    }
+</div>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPag; i++)
+        {
+            string active = i == pagIndex ? "active" : "";
+            <li class="page-item @active">
+                <a class="page-link" href="?pagIndex=@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

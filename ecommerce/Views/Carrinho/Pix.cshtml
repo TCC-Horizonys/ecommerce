@@ -1,0 +1,179 @@
+﻿@model ecommerce.Models.Carrinho
+@{
+    ViewData["Title"] = "Pagamento com Pix";
+    var codigoPix = ViewBag.CodigoPix as string ?? "PIX-CODIGO";
+}
+
+<div class="pix-wrap">
+    <h1 class="pix-title">PAGAMENTO COM PIX</h1>
+    <hr class="pix-rule" />
+
+    <div class="pix-grid">
+        <!-- LADO ESQUERDO -->
+        <section class="pix-left">
+            <div class="pix-expires">
+                <span>ESTE CÓDIGO VENCE EM :</span>
+                <strong id="contador">30:00</strong>
+            </div>
+
+            <div class="pix-copy-label">COPIE O CÓDIGO<br />ABAIXO:</div>
+
+            <div class="pix-code-box" id="codigoPixContainer">
+                @codigoPix
+            </div>
+
+            <button id="btnCopiarPix" class="pix-btn" onclick="copiarPix(event, '@codigoPix')">
+                COPIAR CÓDIGO
+            </button>
+        </section>
+
+        <!-- LADO DIREITO (RESUMO DO PEDIDO) -->
+        <aside class="pix-right">
+            <div class="order-card">
+                <div class="order-title">PEDIDO</div>
+
+                <div class="order-row">
+                    <span>TOTAL DO PEDIDO :</span>
+                    <strong>R$ @Model.Subtotal.ToString("N2")</strong>
+                </div>
+                <div class="order-row">
+                    <span>FRETE :</span>
+                    <strong>R$ @Model.TaxaEntrega.ToString("N2")</strong>
+                </div>
+
+                <div class="order-total">
+                    <span>TOTAL DO PEDIDO :</span>
+                    <strong>R$ @Model.ValorTotal.ToString("N2")</strong>
+                </div>
+
+                <form method="get" action="@Url.Action("ConfirmPag", "Carrinho")" class="order-form">
+                    <input type="hidden" name="pedidoId" value="@ViewBag.PedidoId" />
+                    <button type="submit" class="order-btn">CONFIRMAR<br />PAGAMENTO</button>
+                </form>
+
+            </div>
+        </aside>
+    </div>
+</div>
+
+@section Scripts{
+<script>
+function copiarPix(e, codigo){
+  navigator.clipboard.writeText(codigo);
+  const btn = e.target;
+  btn.textContent = "COPIADO!";
+  btn.classList.add("pix-btn-ok");
+  setTimeout(()=>{ btn.textContent = "COPIAR CÓDIGO"; btn.classList.remove("pix-btn-ok"); }, 1800);
+}
+
+// contador 30:00
+let tempoRestante = 30*60;
+const contador = document.getElementById("contador");
+const btnCopiar = document.getElementById("btnCopiarPix");
+const box = document.getElementById("codigoPixContainer");
+
+const timer = setInterval(()=>{
+  const m = Math.floor(tempoRestante/60);
+  const s = tempoRestante % 60;
+  contador.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  if(tempoRestante <= 0){
+    clearInterval(timer);
+    contador.textContent = "EXPIRADO";
+    contador.classList.add("expired");
+    btnCopiar.disabled = true;
+    btnCopiar.classList.add("pix-btn-disabled");
+    box.classList.add("code-disabled");
+  }
+  tempoRestante--;
+},1000);
+</script>
+}
+
+@section Styles{
+<style>
+:root{
+  --bg:#F2EAD9;
+  --ink:#2F2A24;
+  --muted:#7c6f65;
+  --panel:#F7F0E4;
+  --card:#F5ECE0;
+  --brown:#8A5F43;
+  --brown-d:#6E4933;
+  --radius:12px;
+  --shadow:0 8px 18px rgba(0,0,0,.10);
+}
+
+body{ background:var(--bg); }
+
+.pix-wrap{ max-width:1100px; margin:28px auto; padding:0 16px; }
+.pix-title{
+  font-family:"Cinzel","Cormorant Garamond",serif; letter-spacing:.10rem;
+  font-size:28px; color:var(--ink); margin:0 0 6px 0; text-transform:uppercase;
+}
+.pix-rule{ border:none; border-top:1px solid rgba(0,0,0,.25); margin:6px 0 20px; }
+
+.pix-grid{
+  display:grid; grid-template-columns:1.1fr .9fr; gap:26px;
+}
+
+.pix-left{ padding-top:4px; }
+.pix-expires{
+  font-family:"Cinzel","Cormorant Garamond",serif; color:var(--muted);
+  display:flex; align-items:center; gap:10px; margin-bottom:18px;
+}
+.pix-expires strong{ color:#000; letter-spacing:.05rem; }
+.expired{ color:#b3261e !important; }
+
+.pix-copy-label{
+  font-family:"Cinzel","Cormorant Garamond",serif;
+  color:var(--ink); margin-bottom:10px; line-height:1.2;
+}
+
+.pix-code-box{
+  background:#fff; border:1px solid rgba(0,0,0,.15); border-radius:10px;
+  min-height:120px; padding:14px; width:min(420px,100%);
+  box-shadow:var(--shadow); color:#3a322c; font-size:13px; line-height:1.4;
+  overflow-wrap:anywhere;
+}
+.code-disabled{ opacity:.6; }
+
+.pix-btn{
+  margin-top:12px; display:inline-block; background:var(--brown);
+  color:#fff; border:none; border-radius:8px; padding:10px 18px;
+  letter-spacing:.06rem; cursor:pointer; box-shadow:var(--shadow);
+}
+.pix-btn:hover{ background:var(--brown-d); transform:translateY(-1px); }
+.pix-btn-ok{ background:#198754 !important; }
+.pix-btn-disabled{ background:#bbb !important; cursor:not-allowed; }
+
+.pix-right{ }
+.order-card{
+  background:var(--panel); border:1px solid rgba(0,0,0,.12); border-radius:12px;
+  box-shadow:var(--shadow); padding:18px;
+}
+.order-title{
+  font-family:"Cinzel","Cormorant Garamond",serif; font-weight:700;
+  color:var(--ink); margin-bottom:10px;
+}
+.order-row{
+  display:flex; justify-content:space-between; margin:6px 0; color:#3c332d;
+}
+.order-total{
+  margin-top:10px; padding-top:10px; border-top:1px solid rgba(0,0,0,.15);
+  display:flex; justify-content:space-between; font-weight:700; color:#3c332d;
+}
+.order-form{ margin-top:14px; display:flex; justify-content:center; }
+.order-btn{
+  background:var(--brown); color:#fff; border:none; border-radius:8px;
+  padding:10px 22px; text-align:center; line-height:1.2; box-shadow:var(--shadow);
+  width:240px;
+}
+.order-btn:hover{ background:var(--brown-d); transform:translateY(-1px); }
+
+media (max-width: 900px){
+  .pix-grid{ grid-template-columns:1fr; }
+  .order-btn{ width:100%; }
+}
+</style>
+}

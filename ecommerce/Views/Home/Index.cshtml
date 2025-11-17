@@ -1,0 +1,216 @@
+﻿@model IEnumerable<ecommerce.Models.Produto>
+@{
+    ViewBag.Title = "Antiquário D'Ouro";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool IsCat(ecommerce.Models.Produto p, params string[] aliases)
+        => aliases.Any(a => (p?.Categoria ?? "").Trim().ToLower().Contains(a));
+
+    var roupas = Model?.Where(p => IsCat(p, "roupa", "roupas")).ToList() ?? new();
+    var arte   = Model?.Where(p => IsCat(p, "arte")).ToList() ?? new();
+    var moveis = Model?.Where(p => IsCat(p, "movel", "móvel", "moveis", "móveis")).ToList() ?? new();
+    var joias  = Model?.Where(p => IsCat(p, "joia", "jóia", "joias", "jóias")).ToList() ?? new();
+}
+
+<div id="imginc" class="text-center">
+    <img src="~/img/imginicio.jpg" width="900" />
+</div>
+
+<!-- Seção de destaque: Antiquário / Atemporal -->
+<section class="antq-feature py-5">
+  <style>
+    :root{ --bg-parchment:#F3EDE1; --ink:#111; --card:#EFE6D8; --shadow:0 6px 18px rgba(0,0,0,.08); --radius:14px; }
+    .antq-feature{ background: var(--bg-parchment); }
+    .antq-feature .wrap{ max-width:1100px; margin-inline:auto; padding-inline:16px; }
+    .antq-feature h2{ font-family:"Cinzel","Cormorant Garamond",Georgia,serif; font-weight:600; letter-spacing:.12rem; color:var(--ink); text-transform:capitalize; }
+    .antq-copy{ font-family:"Cormorant Garamond", Georgia, serif; color:#2f2f2f; line-height:1.55; text-align:justify; font-size:.98rem; }
+    .antq-card{ display:grid; grid-template-columns: 1.15fr .85fr; gap:24px; align-items:center; margin-bottom:40px; }
+    .antq-card.reverse{ grid-template-columns: .85fr 1.15fr; }
+    .antq-img{ border-radius:14px; overflow:hidden; box-shadow:0 4px 16px rgba(0,0,0,.15); }
+    .antq-img img{ width:100%; height:auto; display:block; }
+    .antq-text{ background: rgba(0,0,0,.03); border:1px solid rgba(0,0,0,.06); padding:22px 26px; border-radius:10px; }
+    media (max-width: 900px){ .antq-card, .antq-card.reverse{ grid-template-columns:1fr; } }
+  </style>
+
+  <div class="wrap">
+    <div class="antq-card">
+      <div class="antq-text">
+        <h2 class="mb-3">Antiquário</h2>
+        <p class="antq-copy mb-0">
+           Esse antiquário online reúne peças únicas e cheias de história. Nele, você encontra roupas vintage, móveis antigos, joias de época e obras de arte selecionadas com muito cuidado. Cada item tem seu charme e é escolhido pensando em quem valoriza o estilo e a autenticidade.
+        </p>
+      </div>
+      <div class="antq-img">
+        <img src="~/img/imginc2.png" alt="Afresco barroco" />
+      </div>
+    </div>
+
+    <div class="antq-card reverse">
+      <div class="antq-img">
+        <img src="~/img/imginc3.png" alt="Pintura clássica" />
+      </div>
+      <div class="antq-text">
+        <h2 class="mb-3">Sobre Nós</h2>
+        <p class="antq-copy mb-0">
+          Nosso objetivo é preservar a beleza do tempo, oferecendo roupas, móveis, joias e obras de arte únicas, selecionadas com cuidado e autenticidade.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRODUTOS (layout do protótipo) ===== -->
+<section class="catalogo">
+<style>
+  .catalogo{ background:#F3EDE1; padding:32px 0 60px; }
+  .cat-wrap{ max-width:1100px; margin:0 auto; padding:0 12px; }
+  .cat-title{
+    font-family:"Cinzel","Cormorant Garamond",serif; font-weight:600; letter-spacing:.12rem;
+    text-align:center; margin:8px 0 18px;
+  }
+
+        .produto-card {
+            position: relative;
+            background: #f2e9da;
+            border-radius: 16px;
+            padding: 14px;
+            width: 320px; /* ajuste conforme seu layout */
+            box-shadow: 0 6px 18px rgba(0,0,0,.08);
+        }
+
+            .produto-card .full-link {
+                position: absolute;
+                inset: 0; /* top/right/bottom/left = 0 */
+                z-index: 5; /* acima do conteúdo */
+            }
+
+        .produto-img {
+            width: 100%;
+            border-radius: 12px;
+            display: block;
+        }
+
+        .produto-nome {
+            margin-top: 10px;
+            text-align: center;
+            letter-spacing: .08em;
+        }
+
+        .produto-preco {
+            margin-top: 8px;
+            font-weight: 700;
+            width: max-content;
+            background: #fff;
+            padding: 6px 10px;
+            border-radius: 8px;
+        }
+
+  .card-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:26px; }
+  media (max-width: 992px){ .card-grid{ grid-template-columns: repeat(2,1fr); } }
+  media (max-width: 600px){ .card-grid{ grid-template-columns: 1fr; } }
+
+  .p-card{
+    background:#EFE6D8; border-radius:14px; box-shadow:var(--shadow);
+    padding:18px 16px 10px; text-align:center;
+  }
+  .p-card img{ width:100%; height:220px; object-fit:contain; background:#fff; border-radius:10px; }
+  .p-name{
+    margin:12px 0 4px; text-transform:uppercase; font-family:"Cormorant Garamond",serif;
+    font-size:.98rem; line-height:1.25; min-height:38px;
+  }
+  .p-price{
+    display:inline-block; margin-top:8px; background:#E7DCCD; padding:8px 12px; border-radius:10px;
+    font-weight:700;
+  }
+</style>
+
+  <div class="cat-wrap" id="roupas">
+    <h2 class="cat-title">Roupas</h2>
+    <div class="card-grid">
+            @foreach (var produto in roupas)
+            {
+                <div class="produto-card">
+                    <a asp-controller="Loja"
+                       asp-action="Detalhes"
+                       asp-route-id="@produto.Id"
+                       class="full-link"
+                       aria-label="Ver detalhes de @produto.Nome"></a>
+
+                    <img src="@Url.Content("~/img/" + (produto.Imagens.FirstOrDefault()?.Url ?? "placeholder.png"))"
+                         alt="@produto.Nome" class="produto-img" />
+
+                    <div class="produto-nome">@produto.Nome?.ToUpper()</div>
+                    <div class="produto-preco">R$ @produto.Preco.ToString("N2")</div>
+                </div>
+            }
+
+    </div>
+  </div>
+
+  <div class="cat-wrap mt-4" id="arte">
+    <h2 class="cat-title">Arte</h2>
+    <div class="card-grid">
+      @foreach (var p in arte)
+                @foreach (var produto in arte)
+                {
+                    <div class="produto-card">
+                        <a asp-controller="Loja"
+                           asp-action="Detalhes"
+                           asp-route-id="@produto.Id"
+                           class="full-link"
+                           aria-label="Ver detalhes de @produto.Nome"></a>
+
+                        <img src="@Url.Content("~/img/" + (produto.Imagens.FirstOrDefault()?.Url ?? "placeholder.png"))"
+                             alt="@produto.Nome" class="produto-img" />
+
+                        <div class="produto-nome">@produto.Nome?.ToUpper()</div>
+                        <div class="produto-preco">R$ @produto.Preco.ToString("N2")</div>
+                    </div>
+                }
+    </div>
+  </div>
+
+  <div class="cat-wrap mt-4" id="moveis">
+    <h2 class="cat-title">Móveis</h2>
+    <div class="card-grid">
+            @foreach (var produto in moveis)
+            {
+                <div class="produto-card">
+                    <a asp-controller="Loja"
+                       asp-action="Detalhes"
+                       asp-route-id="@produto.Id"
+                       class="full-link"
+                       aria-label="Ver detalhes de @produto.Nome"></a>
+
+                    <img src="@Url.Content("~/img/" + (produto.Imagens.FirstOrDefault()?.Url ?? "placeholder.png"))"
+                         alt="@produto.Nome" class="produto-img" />
+
+                    <div class="produto-nome">@produto.Nome?.ToUpper()</div>
+                    <div class="produto-preco">R$ @produto.Preco.ToString("N2")</div>
+                </div>
+            }
+    </div>
+  </div>
+
+  <div class="cat-wrap mt-4" id="joias">
+    <h2 class="cat-title">Jóias</h2>
+    <div class="card-grid">
+            @foreach (var produto in joias)
+            {
+                <div class="produto-card">
+                    <a asp-controller="Loja"
+                       asp-action="Detalhes"
+                       asp-route-id="@produto.Id"
+                       class="full-link"
+                       aria-label="Ver detalhes de @produto.Nome"></a>
+
+                    <img src="@Url.Content("~/img/" + (produto.Imagens.FirstOrDefault()?.Url ?? "placeholder.png"))"
+                         alt="@produto.Nome" class="produto-img" />
+
+                    <div class="produto-nome">@produto.Nome?.ToUpper()</div>
+                    <div class="produto-preco">R$ @produto.Preco.ToString("N2")</div>
+                </div>
+            }
+    </div>
+  </div>
+</section>

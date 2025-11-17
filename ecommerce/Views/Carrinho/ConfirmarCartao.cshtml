@@ -1,0 +1,128 @@
+﻿@model ecommerce.Models.Carrinho
+@{
+    ViewData["Title"] = "Cartão";
+}
+
+<form method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="pedidoId" value="@ViewBag.PedidoId" />
+
+    <div class="pay-wrap">
+        <div class="pay-left">
+            <h2 class="title">CARTÃO</h2>
+
+            <div class="card-form">
+                <div class="row">
+                    <label class="lbl">Tipo
+                        <select class="ipt" name="Tipo" required>
+                            <option value="">Selecione…</option>
+                            <option>Crédito</option>
+                            <option>Débito</option>
+                        </select>
+                    </label>
+
+                    <label class="lbl">Nome do Titular
+                        <input class="ipt" name="NomeTitular" autocomplete="cc-name" required />
+                    </label>
+
+                    <label class="lbl">Número do Cartão
+                        <input class="ipt" name="Numero" maxlength="19" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000" required />
+                    </label>
+
+                    <label class="lbl">Validade (MM/AA)
+                        <input class="ipt" name="Validade" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp" required />
+                    </label>
+
+                    <label class="lbl">CVV
+                        <input class="ipt" name="CVV" maxlength="4" inputmode="numeric" autocomplete="cc-csc" required />
+                    </label>
+
+                    <label class="lbl">Bandeira
+                        <select class="ipt" name="Bandeira" required>
+                            <option value="">Selecione…</option>
+                            <option>Visa</option>
+                            <option>Mastercard</option>
+                            <option>Elo</option>
+                            <option>Hipercard</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="btns">
+
+
+                    <!-- Finaliza o pagamento -->
+                    <a class="btn-ghost"
+                       href="@Url.Action("ConfirmPag", "Carrinho", new { pedidoId = ViewBag.PedidoId })">
+                        Pagar agora
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+        <aside class="pay-right">
+            <div class="summary">
+                <div class="sum-row">
+                    <span>Total dos itens:</span>
+                    <strong>R$ @Model.Subtotal.ToString("N2")</strong>
+                </div>
+                <div class="sum-row">
+                    <span>Frete:</span>
+                    <strong>R$ @Model.TaxaEntrega.ToString("N2")</strong>
+                </div>
+                <hr />
+                <div class="sum-row total">
+                    <span>Total:</span>
+                    <strong>R$ @((Model.Subtotal + Model.TaxaEntrega).ToString("N2"))</strong>
+                </div>
+            </div>
+        </aside>
+    </div>
+</form>
+
+@section Styles{
+<style>
+    :root{ --bg:#F3EDE1; --ink:#1b1b1b; --card:#F7F1E6; --accent:#8a5f43; --shadow:0 8px 18px rgba(0,0,0,.12); --radius:14px; }
+    body{ background:var(--bg); }
+    .pay-wrap{max-width:1100px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:1.3fr .7fr;gap:28px;}
+    .pay-left .title{font-family:"Cinzel","Cormorant Garamond",serif;letter-spacing:.12rem;margin:8px 0 10px;}
+    .card-form{background:var(--card);border:1px solid rgba(0,0,0,.08);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .lbl{display:flex;flex-direction:column;font-size:.92rem;color:var(--ink);}
+    .ipt{height:42px;border:none;border-radius:10px;background:#ece9e3;padding:0 12px;outline:none;}
+    .ipt:focus{box-shadow:0 0 0 2px rgba(0,0,0,.10) inset;}
+    .btns{display:flex;gap:12px;margin-top:14px;}
+    .btn-main{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:10px 24px;box-shadow:0 4px 10px rgba(0,0,0,.12);cursor:pointer;}
+    .btn-main:hover{transform:translateY(-1px);}
+    .btn-ghost{background:#fff;border:1px solid rgba(0,0,0,.15);border-radius:12px;padding:10px 22px;text-decoration:none;color:var(--ink);}
+    .pay-right .summary{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.08);padding:18px;position:sticky;top:20px;}
+    .sum-row{display:flex;justify-content:space-between;margin:6px 0;}
+    .total strong{font-size:1.1rem;}
+    media (max-width: 900px){ .pay-wrap{grid-template-columns:1fr;gap:18px;} }
+</style>
+}
+
+@section Scripts{
+<script>
+(function(){
+    const numero = document.querySelector('input[name="Numero"]');
+    const validade = document.querySelector('input[name="Validade"]');
+
+    if (numero){
+        numero.addEventListener('input', e=>{
+            let v = e.target.value.replace(/\D/g,'').slice(0,16);
+            v = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+            e.target.value = v;
+        });
+    }
+    if (validade){
+        validade.addEventListener('input', e=>{
+            let v = e.target.value.replace(/\D/g,'').slice(0,4);
+            if (v.length>=3) v = v.slice(0,2) + '/' + v.slice(2);
+            e.target.value = v;
+        });
+    }
+})();
+</script>
+}

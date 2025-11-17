@@ -1,0 +1,150 @@
+html {
+    font-size: 14px;
+
+}
+
+/* força horizontal na navbar e ajusta espaçamento */
+.navbar .navbar-nav {
+    flex-direction: row !important;
+}
+
+.navbar .nav-link {
+    padding: .5rem 1rem;
+}
+
+    /* hover preto com a mesma cor de fonte que você já usa */
+    .navbar .nav-link:hover {
+        background: #000;
+        color: inherit;
+    }
+
+/* rolagem suave e correção de âncora atrás da navbar fixa */
+html {
+    scroll-behavior: smooth;
+}
+
+#roupas, #arte, #moveis, #joias {
+    scroll-margin-top: 90px;
+}
+/* ajuste 90px ao tamanho da sua navbar */
+
+
+:root {
+    --bg-parchment: #F5EFE1;
+}
+/* opcional, combina com a navbar */
+html, body {
+    background: var(--bg-parchment); /* ou #F3EDE1 */
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+main {
+    flex: 1;
+}
+
+.navbar {
+    background-color: #F5EFE1 !important;
+}
+
+.navbar .nav-link {
+    color: white !important;
+}
+
+.navbar .nav-link:hover {
+    opacity: 0.8;
+}
+
+.navitens {
+    align-items: end;
+    text-align: right;
+    justify-content: right;
+}
+
+
+.menu-categorias {
+    background-color: #f4f4f4;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.menu-categorias ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    gap: 40px;
+    margin: 0;
+    padding: 10px 0;
+}
+
+.menu-categorias a {
+        color: black;
+        text-decoration: none;
+        font-weight: 500;
+}
+
+.menu-categorias a:hover {
+            text-decoration: underline;
+}
+
+.dropdown-menu {
+    min-width: 180px;
+}
+
+
+#cartSize{
+    margin-top:5px;
+}
+
+
+.footer {
+    background-color: #232323;
+    margin-top: auto;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.footer-bottom {
+    background-color: #232323;
+    color: #aaa;
+    font-size: 0.85rem;
+    border-top: 1px solid #444;
+}
+
+.footer a:hover {
+    color: #0d6efd;
+    transition: 0.3s;
+}
+
+footer, .footer {
+    position: relative !important;
+    bottom: 0;
+}
+

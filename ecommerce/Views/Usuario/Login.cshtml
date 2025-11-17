@@ -1,0 +1,158 @@
+﻿@model Login
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<section class="login-wrap">
+    <div class="login-card">
+
+        @* Aviso de erro (mantido) *@
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>@ViewBag.ErrorMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="Login" asp-controller="Usuario" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label class="login-label" for="Email">USUÁRIO</label>
+                <input asp-for="Email" class="input-pill" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-2">
+                <label class="login-label" for="Senha">SENHA</label>
+                <input asp-for="Senha" type="password" class="input-pill" />
+                <span asp-validation-for="Senha" class="text-danger small"></span>
+            </div>
+
+            <div class="actions mb-2">
+                <button type="submit" class="btn-login">LOGIN</button>
+            </div>
+
+            <div class="register">
+                <a asp-controller="Usuario" asp-action="Registrar">CADASTRE-SE</a>
+            </div>
+
+            @* Se quiser manter “Esqueceu a senha?”, deixe abaixo *@
+            @* <div class="restore"><a asp-controller="Usuario" asp-action="EsqueceuSenha">Esqueceu sua senha?</a></div> *@
+        </form>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        :root {
+            --bg-parchment: #F3EDE1; /* fundo bege da página */
+            --card: #F7F1E6; /* bege mais claro do card */
+            --ink: #1b1b1b;
+            --accent: #8a5f43; /* marrom do botão */
+            --shadow: 0 8px 18px rgba(0,0,0,.15);
+            --radius: 14px;
+        }
+
+        .login-wrap {
+            min-height: calc(100vh - 220px); /* ajuste conforme altura do seu header/footer */
+            background: var(--bg-parchment);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card);
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px 26px 18px;
+        }
+
+        .login-label {
+            display: block;
+            font-family: "Cinzel","Cormorant Garamond", Georgia, serif;
+            letter-spacing: .08rem;
+            color: var(--ink);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: .95rem;
+        }
+
+        .input-pill {
+            width: 100%;
+            height: 42px;
+            border: none;
+            border-radius: 999px;
+            background: #eae9e6; /* cinza claro do print */
+            padding: 0 16px;
+            outline: none;
+            font-size: .98rem;
+            color: var(--ink);
+        }
+
+            .input-pill:focus {
+                box-shadow: 0 0 0 2px rgba(0,0,0,.08) inset;
+            }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .btn-login {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 28px;
+            font-family: "Cinzel","Cormorant Garamond", Georgia, serif;
+            letter-spacing: .08rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,.12);
+            cursor: pointer;
+            transition: transform .1s ease, box-shadow .1s ease, opacity .1s ease;
+        }
+
+            .btn-login:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 8px 16px rgba(0,0,0,.16);
+            }
+
+            .btn-login:active {
+                transform: translateY(0);
+                opacity: .95;
+            }
+
+        .register {
+            text-align: center;
+            margin-top: 10px;
+            font-family: "Cinzel","Cormorant Garamond", Georgia, serif;
+            letter-spacing: .08rem;
+        }
+
+            .register a {
+                color: var(--ink);
+                text-decoration: none;
+            }
+
+            .register:hover {
+                transform: translateY(-1px);
+            }
+
+        /* Opcional: esconder o título antigo se ainda estiver no layout */
+        h2.text-center, hr {
+            display: none;
+        }
+    </style>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

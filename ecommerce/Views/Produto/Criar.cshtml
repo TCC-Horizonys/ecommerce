@@ -1,0 +1,159 @@
+﻿@model ecommerce.Models.Produto
+
+<section class="pf-wrap">
+  <div class="pf-card">
+    <h3 class="pf-title">Cadastro do Produto</h3>
+
+    <form asp-action="Criar" asp-controller="Produto" method="post" enctype="multipart/form-data" id="formProduto">
+      <div class="pf-grid">
+        <!-- Coluna esquerda -->
+        <div class="pf-col">
+          <div class="pf-group">
+            <label class="pf-label" for="Nome">Nome</label>
+            <input class="pf-input" asp-for="Nome" />
+            <span asp-validation-for="Nome" class="text-danger small"></span>
+          </div>
+
+          <div class="pf-group">
+            <label class="pf-label">Imagem</label>
+            <div class="pf-upload">
+              <input type="file" class="pf-file" name="imagensArquivo" multiple accept="image/*" />
+            </div>
+            <span asp-validation-for="Imagens" class="text-danger small"></span>
+          </div>
+        </div>
+
+        <!-- Coluna direita -->
+        <div class="pf-col">
+          <div class="pf-group">
+            <label class="pf-label" for="Categoria">Categoria</label>
+            <select class="pf-input" asp-for="Categoria">
+              <option value="Roupa">Roupa</option>
+              <option value="Arte">Arte</option>
+              <option value="Movel">Móvel</option>
+              <option value="Joias">Jóias</option>
+            </select>
+            <span asp-validation-for="Categoria" class="text-danger small"></span>
+          </div>
+
+                    <div class="pf-group">
+                        <label class="pf-label" for="Descricao">Descrição</label>
+                        <textarea class="pf-input pf-textarea" asp-for="Descricao" rows="6"
+                                  placeholder="Conte a história, materiais, medidas, etc."></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger small"></span>
+                    </div>
+
+          <div class="pf-group">
+            <label class="pf-label" for="Preco">Preço</label>
+            <input asp-for="Preco" class="pf-input" id="Preco" type="text" placeholder="0,00" />
+            <span asp-validation-for="Preco" class="text-danger small"></span>
+          </div>
+
+          <div class="pf-group">
+            <label class="pf-label" for="EstadoConservacao">Estado de Conservação</label>
+            <textarea class="pf-input pf-textarea" asp-for="EstadoConservacao"></textarea>
+            <span asp-validation-for="EstadoConservacao" class="text-danger small"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pf-actions">
+        <button type="submit" class="pf-button">Adicionar</button>
+      </div>
+
+      <div class="pf-footer">
+        <a asp-controller="Produto" asp-action="Index" class="pf-link">Concluir</a>
+      </div>
+    </form>
+  </div>
+</section>
+
+@section Styles{
+<style>
+  :root{
+    --bg-parchment:#F3EDE1;   /* fundo da página */
+    --card:#F1E8D7;           /* cartão do formulário */
+    --ink:#1b1b1b;
+    --accent:#8a5f43;         /* marrom do botão */
+    --muted: white; /* cinza dos inputs */
+    --radius:18px;
+    --shadow:0 8px 18px rgba(0,0,0,.12);
+  }
+
+  .pf-wrap{ background:var(--bg-parchment); padding:16px; display:flex; justify-content:center; }
+  .pf-card{
+    width:100%; max-width: 1000px; background:var(--card);
+    border:1px solid rgba(0,0,0,.08); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding:18px 20px 10px;
+  }
+  .pf-title{
+    margin:0 0 14px 0; font-family:"Cinzel","Cormorant Garamond", Georgia, serif; letter-spacing:.06rem;
+    font-size:1.05rem; color:var(--ink); border-bottom:1px solid rgba(0,0,0,.25); padding-bottom:6px;
+  }
+
+  .pf-grid{
+    display:grid; grid-template-columns: 1fr 1fr; gap:24px 28px;
+  }
+  media (max-width: 900px){ .pf-grid{ grid-template-columns: 1fr; } }
+
+  .pf-group{ display:flex; flex-direction:column; gap:6px; }
+  .pf-label{
+    font-family:"Cinzel","Cormorant Garamond", Georgia, serif; letter-spacing:.06rem; color:var(--ink);
+    text-transform:uppercase; font-size:.88rem;
+  }
+
+  .pf-input{
+    width:100%; height:42px; border:none; outline:none; border-radius:12px;
+            background: white; /* cinza claro */
+    padding:0 14px; color:var(--ink); font-size:.98rem;
+  }
+  .pf-textarea{ height:auto; min-height:70px; padding:10px 14px; resize:vertical; }
+
+  /* Upload box visual (área cinza como no mock) */
+  .pf-upload{
+    background:#e0ddd8; border-radius:12px; border:1px dashed rgba(0,0,0,.2);
+    height:80px; display:flex; align-items:center; justify-content:center;
+  }
+  .pf-file{ background:transparent; border:none; }
+
+  .pf-actions{ display:flex; justify-content:center; margin-top: 14px; }
+  .pf-button{
+    background:var(--accent); color:#fff; border:none; border-radius:10px;
+    padding:10px 26px; font-family:"Cinzel","Cormorant Garamond", Georgia, serif; letter-spacing:.06rem;
+    box-shadow:0 4px 10px rgba(0,0,0,.12); cursor:pointer;
+  }
+  .pf-button:hover{ filter:brightness(1.05); }
+
+  .pf-footer{ text-align:center; margin-top:8px; }
+
+        .pf-link {
+            color: #8a5f43;
+            text-decoration: none;
+            font-family: "Cinzel","Cormorant Garamond",serif;
+        }
+
+        .pf-link {
+            transform: translateY(-1px);
+            font-weight: bold;
+        }
+</style>
+}
+
+@section Scripts{
+  <script>
+    // sua máscara de preço original (ajustada para esta view)
+    document.addEventListener("DOMContentLoaded", function () {
+      const precoInput = document.getElementById("Preco");
+      if (precoInput && !precoInput.value) precoInput.value = "0,00";
+
+      function formatar(v){
+        v = (v || "").toString().replace(/\D/g,"");
+        if (v === "") v = "0";
+        v = (parseInt(v)/100).toFixed(2).replace(".",",");
+        return v;
+      }
+      precoInput?.addEventListener("input", function(e){ e.target.value = formatar(e.target.value); });
+      precoInput?.addEventListener("blur",  function(e){ if(!e.target.value) e.target.value = "0,00"; });
+    });
+  </script>
+}

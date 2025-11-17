@@ -1,0 +1,199 @@
+﻿@model ecommerce.Models.Carrinho
+
+<section class="cart-grid">
+    <div>
+        <h3 class="cart-title">Carrinho</h3>
+
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="alert alert-warning alert-dismissible fade show mt-3" role="alert">
+                <strong>@ViewBag.ErrorMessage</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (Model.Itens == null || !Model.Itens.Any())
+        {
+            <div class="cart-empty">Seu carrinho está vazio.</div>
+        }
+        else
+        {
+            <div class="cart-list">
+                @foreach (var item in Model.Itens)
+                {
+                    <article class="cart-item">
+                        <!-- Linka imagem + título para a página de detalhes -->
+                        <a asp-controller="Loja"
+                           asp-action="Detalhes"
+                           asp-route-id="@item.Produto.Id"
+                           class="cart-link">
+                            <img src="@Url.Content("~/img/" + item.Imagem?.Url)" alt="@item.Produto.Nome" />
+
+                            <div class="cart-item-info">
+                                <div class="cart-item-name">@item.Produto.Nome</div>
+                                <div class="cart-item-meta">Categoria: @item.Produto.Categoria</div>
+                            </div>
+                        </a>
+
+                        <div class="cart-item-price">
+                            R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))
+                        </div>
+
+
+                        <form asp-controller="Carrinho" asp-action="Remover" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="produtoId" value="@item.Produto.Id" />
+                            <input type="hidden" name="next" value="Infos" />
+                            <button type="submit"
+                                    class="trash-btn"
+                                    title="Remover"
+                                    formaction="@Url.Action("Remover","Carrinho")"
+                                    formmethod="post">
+                                <i class="bi bi-trash"></i>
+                            </button>
+
+                        </form>
+
+
+
+                    </article>
+                }
+            </div>
+
+        }
+    </div>
+
+    <aside class="cart-summary">
+        <h4 class="summary-title">Pedido</h4>
+
+        <div class="summary-row">
+            <span>Total do pedido :</span>
+            <strong>R$ @Model.Subtotal.ToString("N2")</strong>
+        </div>
+
+        @using Microsoft.AspNetCore.Http
+        @{
+            var usuarioLogado = Context.Session.GetString("UsuarioNome");
+        }
+
+        @if (!string.IsNullOrEmpty(usuarioLogado))
+        {
+            <form>
+                <button type="submit" class="btn-continue" asp-controller="Carrinho" asp-action="Infos">
+                    Continuar
+                </button>
+            </form>
+        }
+        else
+        {
+            <div class="auth-actions">
+                <a class="btn-continue" asp-controller="Usuario" asp-action="Cadastrar">Cadastrar</a>
+                <a class="btn-ghost" asp-controller="Usuario" asp-action="Login">Login</a>
+            </div>
+        }
+    </aside>
+</section>
+
+@section Styles{
+<style>
+/* cores do protótipo */
+:root{
+  --bg:#f4efe3;           /* fundo pergaminho */
+  --card:#efe5d6;         /* cartões */
+  --ink:#1b1713;          /* texto */
+  --accent:#8b6248;       /* botões marrons */
+  --shadow:0 6px 18px rgba(0,0,0,.08);
+  --radius:14px;
+  --radius-lg:18px;
+  --font-title:"Cinzel", "Cormorant Garamond", serif;
+}
+.cart-grid{
+  display:grid; gap:20px; grid-template-columns: 1fr 360px;
+}
+media (max-width: 992px){
+  .cart-grid{ grid-template-columns: 1fr; }
+}
+
+/* coluna esquerda */
+.cart-title{
+  font-family:var(--font-title);
+  margin:0 0 10px;
+  letter-spacing:.03em;
+}
+.cart-empty{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px; color:#6b625a;
+}
+.cart-list{ display:flex; flex-direction:column; gap:14px; }
+
+.cart-item{
+  display:grid;
+  grid-template-columns: 100px 1fr auto auto auto;
+  gap:14px;
+  align-items:center;
+  background:var(--card);
+  border-radius:var(--radius-lg);
+  padding:14px;
+  box-shadow:var(--shadow);
+}
+.cart-item img{
+  width:100px; height:100px; object-fit:contain; background:#fff; border-radius:10px;
+}
+.cart-item-info{ min-width: 160px; }
+.cart-item-name{
+  font-family:var(--font-title);
+  font-size:1.05rem;
+}
+.cart-item-meta{
+  font-size:.85rem; opacity:.75;
+  margin-top:2px;
+}
+.cart-item-qty{
+  display:flex; align-items:center; gap:8px; justify-self:center;
+}
+.qty-btn{
+  width:34px; height:34px; border:none; border-radius:10px;
+  background:#e5d8c6; line-height:34px; font-size:18px; padding:0; cursor:pointer;
+}
+.qty-chip{
+  display:inline-block; min-width:34px; text-align:center;
+  padding:6px 10px; border-radius:12px; background:#fff; border:1px solid #e3d8c8;
+}
+.cart-item-price{
+  font-weight:700; justify-self:end; white-space:nowrap;
+}
+.trash-btn{
+  width:36px; height:36px; border:none; background:transparent; color:#8a3b3b;
+  font-size:1.2rem; cursor:pointer; justify-self:end;
+}
+
+/* coluna direita */
+.cart-summary{
+  background:var(--card);
+  border-radius:var(--radius-lg);
+  padding:18px;
+  box-shadow:var(--shadow);
+  height:max-content;
+}
+.summary-title{
+  font-family:var(--font-title);
+  margin-bottom:10px;
+}
+.summary-row{
+  display:flex; justify-content:space-between; align-items:center;
+  padding:10px 0 18px; border-bottom:1px solid rgba(0,0,0,.06); margin-bottom:14px;
+}
+.btn-continue{
+  width:100%; border:none; cursor:pointer;
+  background:var(--accent); color:#fff; padding:10px 16px;
+  border-radius:12px; box-shadow:0 2px 0 rgba(0,0,0,.1) inset;
+  text-transform:uppercase; letter-spacing:.02em;
+}
+.auth-actions{ display:grid; gap:10px; }
+.btn-ghost{
+  width:100%; border:1px solid var(--accent); color:var(--accent);
+  background:transparent; padding:10px 16px; border-radius:12px; text-align:center;
+}
+</style>
+}

@@ -1,0 +1,321 @@
+﻿@model ecommerce.Models.Carrinho
+
+@if (TempData["Erro"] != null)
+{
+  <div class="alert-err">@TempData["Erro"]</div>
+}
+
+<form asp-action="FinalizarPedido" asp-controller="Carrinho" method="post" id="checkoutForm">
+  <!-- usado se o usuário escolher um endereço salvo (opcional) -->
+  <input type="hidden" name="EnderecoSelecionadoId" id="EnderecoSelecionadoId" value="" />
+  <!-- usado quando escolher um cartão salvo OU após cadastrar um -->
+  <input type="hidden" name="CartaoId" id="cartaoSelecionado" value="" />
+
+  <div class="ck-wrap">
+    <!-- ESQUERDA --------------------------------------------------------->
+    <section class="left">
+      <h2 class="h-title">Pagamento</h2>
+
+      <!-- Endereço inline (NÃO precisa salvar antes) -->
+      <div class="addr">
+        <div class="addr-title">Endereço:</div>
+
+        <label class="f-row">
+          <span>Logradouro</span>
+          <input class="ipt" name="Logradouro" />
+        </label>
+
+        <div class="grid-2">
+          <label>
+            <span>Número</span>
+            <input class="ipt" name="Numero" />
+          </label>
+          <label>
+            <span>CEP</span>
+            <input class="ipt" name="CEP" />
+          </label>
+        </div>
+
+        <div class="grid-2">
+          <label>
+            <span>Cidade</span>
+            <input class="ipt" name="Cidade" />
+          </label>
+          <label>
+            <span>Estado</span>
+            <input class="ipt" name="Estado" />
+          </label>
+        </div>
+
+        <label class="f-row">
+          <span>Complemento</span>
+          <input class="ipt" name="Complemento" />
+        </label>
+      </div>
+
+      <!-- Método de pagamento -->
+      <div class="pay-legend">SELECIONE O MÉTODO DE PAGAMENTO</div>
+
+      <div class="pay-choices">
+        <input type="radio" id="metodoCartao" name="MetodoPagamento" value="Cartao" class="vh" />
+        <label for="metodoCartao" class="pill">
+          <span class="dot"></span>
+          CARTÃO
+        </label>
+
+        <input type="radio" id="metodoPix" name="MetodoPagamento" value="Pix" class="vh" />
+        <label for="metodoPix" class="pill">
+          <span class="dot"></span>
+          PIX
+        </label>
+      </div>
+      
+
+    </section> 
+
+    <!-- DIREITA / RESUMO ------------------------------------------------->
+    <aside class="right">
+      <div class="card">
+        <div class="card-title">PEDIDO</div>
+
+        <div class="row">
+          <span>Total do pedido:</span>
+          <strong>R$ @Model.Subtotal.ToString("N2")</strong>
+        </div>
+        <div class="row">
+          <span>Frete:</span>
+          <strong>R$ @Model.TaxaEntrega.ToString("N2")</strong>
+        </div>
+
+        <hr />
+
+        <div class="row total">
+          <span>Total do pedido:</span>
+          <strong>R$ @Model.Total.ToString("N2")</strong>
+        </div>
+
+        <button type="submit" class="btn-pay" id="btnPagar">CONTINUAR</button>
+      </div>
+    </aside>
+  </div>
+</form>
+
+<!-- MODAL: Adicionar Cartão --------------------------------------------->
+<div class="modal fade" id="AdicionarCartao" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5">Adicionar Cartão</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+
+      <div class="modal-body">
+        <form asp-action="SalvarCartao" method="post" id="formAddCartao">
+          <div class="mb-3">
+            <label class="form-label">Tipo</label>
+            <select name="Tipo" class="form-select" required>
+              <option value="">Selecione...</option>
+              <option>Crédito</option>
+              <option>Débito</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Nome no cartão</label>
+            <input name="NomeTitular" class="form-control" required />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Número do cartão</label>
+            <input name="Numero" maxlength="19" inputmode="numeric" class="form-control" placeholder="0000 0000 0000 0000" required />
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Validade (MM/AA)</label>
+              <input name="Validade" maxlength="5" class="form-control" placeholder="MM/AA" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">CVV</label>
+              <input name="CVV" maxlength="4" inputmode="numeric" class="form-control" required />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Bandeira</label>
+            <select name="Bandeira" class="form-select" required>
+              <option value="">Selecione...</option>
+              <option>Visa</option>
+              <option>Mastercard</option>
+              <option>Elo</option>
+              <option>Hipercard</option>
+            </select>
+          </div>
+
+          <div class="text-end">
+            <button type="submit" class="btn btn-primary">Salvar cartão</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+@section Styles{
+<style>
+:root{
+  --bg:#F5EEDF;
+  --panel:#F3E8D7;
+  --ink:#2b2b2b;
+  --muted:#7a6f66;
+  --card:#F6EDE0;
+  --btn:#8a5f43;
+  --btn-dark:#6f4a36;
+  --radius:14px;
+  --shadow:0 10px 22px rgba(0,0,0,.12);
+}
+
+body{ background:var(--bg); }
+
+.ck-wrap{
+  max-width:1080px; margin:32px auto; padding:8px 12px;
+  display:grid; grid-template-columns: 1fr 380px; gap:32px;
+}
+
+.h-title{
+  margin:10px 0 12px; font-family:"Cinzel","Cormorant Garamond",serif;
+  letter-spacing:.08rem; color:var(--ink);
+}
+
+.left{
+  background:var(--panel); border:1px solid rgba(0,0,0,.06);
+  border-radius:var(--radius); padding:18px 18px 10px; box-shadow:var(--shadow);
+}
+
+.addr-title{ font-weight:600; color:var(--muted); margin-bottom:6px; }
+.f-row{ display:flex; flex-direction:column; gap:6px; margin-bottom:10px; }
+.grid-2{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:10px; }
+
+.ipt{
+  height:40px; border:none; border-radius:999px; background:#eae9e6;
+  padding:0 14px; outline:none; font-size:.97rem; color:var(--ink);
+}
+.ipt:focus{ box-shadow:0 0 0 2px rgba(0,0,0,.08) inset; }
+
+.pay-legend{
+  margin:10px 0 8px; text-align:center; color:var(--muted);
+  font-size:.85rem; letter-spacing:.06rem;
+}
+
+.pay-choices{ display:flex; justify-content:center; gap:16px; }
+.vh{ position:absolute; inset:0; width:0; height:0; opacity:0; }
+.pill{
+  display:inline-flex; align-items:center; gap:10px;
+  background:#e8dfd2; color:#3a2e25; padding:10px 22px;
+  border-radius:999px; cursor:pointer; user-select:none;
+  box-shadow:0 6px 14px rgba(0,0,0,.10); transition:.15s ease;
+  font-family:"Cinzel","Cormorant Garamond",serif; letter-spacing:.06rem;
+}
+.pill:hover{ transform:translateY(-1px); }
+.pill .dot{
+  width:10px;height:10px;border-radius:50%; background:#c7b6a7;
+  box-shadow:inset 0 0 0 2px rgba(0,0,0,.06);
+}
+#metodoCartao:checked + label .dot,
+#metodoPix:checked + label .dot{ background:#8a5f43; }
+
+.cards-salvos{ margin-top:12px; display:grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap:12px; }
+.cartao-card{ background:#fff; border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:12px; cursor:pointer; transition:.15s; }
+.cartao-card:hover{ transform:translateY(-1px); box-shadow:0 6px 14px rgba(0,0,0,.12); }
+.cartao-card.selected{ border-color:#8a5f43; box-shadow:0 0 0 3px rgba(138,95,67,.15); }
+.cartao-head{ display:flex; align-items:center; gap:8px; margin-bottom:4px; }
+.cartao-head img{ width:28px; height:28px; }
+.cartao-body .muted{ color:#7a6f66; font-size:.9rem; }
+.btn-lite{ margin-top:6px; background:#fff; border:1px solid rgba(0,0,0,.15); padding:8px 14px; border-radius:10px; }
+
+.right .card{
+  background:var(--card); border:1px solid rgba(0,0,0,.08);
+  border-radius:var(--radius); padding:18px; box-shadow:var(--shadow);
+  position:sticky; top:16px;
+}
+.card-title{
+  font-weight:700; color:#43362d; margin-bottom:10px;
+  font-family:"Cinzel","Cormorant Garamond",serif; letter-spacing:.06rem;
+}
+.row{ display:flex; justify-content:space-between; margin:6px 0; color:#43362d; }
+.row.total{ margin:10px 0 16px; font-weight:700; }
+
+.btn-pay{
+  width:100%; height:42px; border:none; border-radius:10px;
+  background:var(--btn); color:#fff; font-weight:600; letter-spacing:.05rem;
+  cursor:pointer; transition:.12s ease; box-shadow:0 6px 14px rgba(0,0,0,.10);
+}
+.btn-pay:hover{ background:var(--btn-dark); transform:translateY(-1px); }
+
+.alert-err{
+  max-width:1080px; margin:18px auto 0; padding:10px 14px;
+  border-radius:10px; background:#ffe3e3; color:#7a1f1f; border:1px solid #f3c0c0;
+}
+
+media (max-width: 980px){
+  .ck-wrap{ grid-template-columns: 1fr; }
+  .right .card{ position:static; }
+}
+</style>
+}
+
+@section Scripts{
+<script>
+(function(){
+  // Pílulas clicáveis
+  document.addEventListener('click', function (e) {
+    const lab = e.target.closest('label.pill');
+    if (!lab) return;
+    const id = lab.getAttribute('for');
+    const inp = document.getElementById(id);
+    if (inp) { inp.checked = true; inp.dispatchEvent(new Event('change')); }
+  });
+
+
+
+  // Formatação simples do número/validade no modal
+  const modalEl = document.getElementById('AdicionarCartao');
+  modalEl?.addEventListener('shown.bs.modal', () => {
+    const num = modalEl.querySelector('input[name="Numero"]');
+    const val = modalEl.querySelector('input[name="Validade"]');
+    num?.addEventListener('input', e=>{
+      let v = e.target.value.replace(/\D/g,'').slice(0,16);
+      v = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+      e.target.value = v;
+    });
+    val?.addEventListener('input', e=>{
+      let v = e.target.value.replace(/\D/g,'').slice(0,4);
+      if (v.length>=3) v = v.slice(0,2) + '/' + v.slice(2);
+      e.target.value = v;
+    });
+  });
+
+  // Selecionar cartão salvo
+  window.selecionarCartao = function(id){
+    document.getElementById('cartaoSelecionado').value = id;
+    document.querySelectorAll('.cartao-card').forEach(c=>c.classList.remove('selected'));
+    document.getElementById('cartao-'+id)?.classList.add('selected');
+  }
+
+  // Validação mínima no submit (somente exige método de pagamento)
+  document.getElementById('checkoutForm')?.addEventListener('submit', function(e){
+    const metodo = document.querySelector('input[name="MetodoPagamento"]:checked');
+    if (!metodo){
+      e.preventDefault();
+      alert('Selecione um método de pagamento (Cartão ou Pix).');
+      return;
+    }
+    // não exigimos endereço salvo; o controller cria um endereço com os campos acima
+  });
+})();
+</script>
+}

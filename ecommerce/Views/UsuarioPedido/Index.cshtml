@@ -1,0 +1,74 @@
+﻿@model List<ecommerce.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+
+    int pagIndex = (int)ViewData["PagIndex"];
+    int totalPag = (int)ViewData["TotalPag"];
+}
+
+<h3 class="text-center mb-4">Lista de Pedidos</h3>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Unidades</th>
+            <th>Total</th>
+            <th>Método Pagamento</th>
+            <th>Status Pagamento</th>
+            <th>Status Pedido</th>
+            <th>Data</th>
+            <th>Ação</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var pedido in Model)
+        {
+            // Total de unidades
+            int unidades = pedido.Itens?.Sum(i => i.Quantidade) ?? 0;
+
+            // Nome do método de pagamento
+            string metodoPagamento = pedido.MetodoPagamento != null ? pedido.MetodoPagamento.Descricao : "Desconhecido";
+
+            // Badges de Status Pagamento
+            string statusPagamentoBadge = pedido.DataPagamento > DateTime.MinValue ? "bg-success" : "bg-warning text-dark";
+
+            // Badges de Status Pedido
+            string statusPedidoBadge = pedido.StatusPedido.ToLower() switch
+            {
+                "Criado" => "bg-warning text-dark",
+                "Aceito" => "bg-success",
+                "cancelado" => "bg-danger",
+                _ => "bg-secondary"
+            };
+
+            <tr>
+                <td>@unidades</td>
+                <td>@pedido.ValorTotal.ToString("F2")</td>
+                <td>@pedido.MetodoPagamento.Descricao</td>
+                <td>
+                    <span class="badge rounded-pill @statusPagamentoBadge">
+                        @(pedido.DataPagamento > DateTime.MinValue ? "Pago" : "Pendente")
+                    </span>
+                </td>
+                <td><span class="badge rounded-pill @statusPedidoBadge">@pedido.StatusPedido</span></td>
+                <td>@pedido.DataPedido.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a class="btn btn-primary btn-sm" asp-controller="UsuarioPedido" asp-action="Detalhes" asp-route-id="@pedido.Id">Detalhes</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= totalPag; i++)
+        {
+            string ativo = i == pagIndex ? "active" : "";
+            <li class="page-item @ativo">
+                <a class="page-link" href="?pagIndex=@i">@i</a>
+            </li>
+        }
+    </ul>
+</nav>

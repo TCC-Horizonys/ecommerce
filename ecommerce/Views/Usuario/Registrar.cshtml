@@ -1,0 +1,172 @@
+﻿@model Usuario
+
+<section class="reg-wrap">
+    <div class="reg-card">
+
+        <h2 class="reg-title">CADASTRE-SE</h2>
+
+        <div asp-validation-summary="ModelOnly" class="text-danger small mb-2" role="alert"></div>
+
+        <form method="post" id="perfilForm">
+            <div class="form-group">
+                <label class="reg-label" for="Email">Email*</label>
+                <input class="input-pill" asp-for="Email" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="reg-label" for="Nome">Nome*</label>
+                <input class="input-pill" asp-for="Nome" />
+                <span asp-validation-for="Nome" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="reg-label" for="DataNasc">Data de Nascimento*</label>
+                <input asp-for="DataNasc" id="DataNasc" class="input-pill" placeholder="Digite apenas números." maxlength="10" />
+                <span asp-validation-for="DataNasc" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="reg-label" for="Telefone">Telefone*</label>
+                <input asp-for="Telefone" class="input-pill" id="Telefone" maxlength="15" placeholder="Digite apenas números." />
+                <span asp-validation-for="Telefone" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="reg-label" for="CPF">CPF*</label>
+                <input asp-for="CPF" class="input-pill" id="CPF" maxlength="14" placeholder="Digite apenas números." />
+                <span asp-validation-for="CPF" class="text-danger small"></span>
+            </div>
+
+
+            <div class="form-group">
+                <label class="reg-label" for="Senha">Senha*</label>
+                <input class="input-pill" type="password" asp-for="Senha" />
+                <span asp-validation-for="Senha" class="text-danger small"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="reg-label" for="ConfirmarSenha">Confirmar Senha*</label>
+                <input class="input-pill" type="password" asp-for="ConfirmarSenha" />
+                <span asp-validation-for="ConfirmarSenha" class="text-danger small"></span>
+            </div>
+
+            <div class="reg-actions">
+                <button type="submit" class="btn-main">REGISTRAR</button>
+            </div>
+
+            <div class="reg-cancel">
+                <a asp-controller="Home" asp-action="Index">Voltar</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        :root {
+            --bg-parchment: #F3EDE1; /* fundo bege */
+            --card: #F7F1E6; /* card claro */
+            --ink: #1b1b1b;
+            --accent: #8a5f43; /* marrom do botão */
+            --shadow: 0 8px 18px rgba(0,0,0,.15);
+            --radius: 14px;
+        }
+
+        .reg-wrap {
+            background: var(--bg-parchment);
+            min-height: calc(100vh - 220px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+        }
+
+        .reg-card {
+            width: 100%;
+            max-width: 520px;
+            background: var(--card);
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px 26px 18px;
+        }
+
+        .reg-title {
+            margin: 0 0 8px 0;
+            font-family: "Cinzel","Cormorant Garamond", Georgia, serif;
+            letter-spacing: .08rem;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .reg-label {
+            display: block;
+            font-family: "Cinzel","Cormorant Garamond", Georgia, serif;
+            letter-spacing: .08rem;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: var(--ink);
+            font-size: .95rem;
+        }
+
+        .input-pill {
+            width: 100%;
+            height: 42px;
+            border: none;
+            border-radius: 999px;
+            background: #eae9e6; /* cinza claro como no layout */
+            padding: 0 16px;
+            outline: none;
+            font-size: .98rem;
+            color: var(--ink);
+        }
+
+            .input-pill:focus {
+                box-shadow: 0 0 0 2px rgba(0,0,0,.08) inset;
+            }
+
+        .reg-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+        }
+
+        .btn-main {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 28px;
+            font-family: "Cinzel","Cormorant Garamond", Georgia, serif;
+            letter-spacing: .08rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,.12);
+            cursor: pointer;
+            transition: transform .1s ease, box-shadow .1s ease, opacity .1s ease;
+        }
+
+            .btn-main:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 8px 16px rgba(0,0,0,.16);
+            }
+
+            .btn-main:active {
+                transform: translateY(0);
+                opacity: .95;
+            }
+
+        .reg-cancel {
+            text-align: center;
+            margin-top: 8px;
+        }
+
+            .reg-cancel a {
+                color: var(--ink);
+                text-decoration: none;
+            }
+    </style>
+}
+

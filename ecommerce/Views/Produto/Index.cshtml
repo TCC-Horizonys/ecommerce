@@ -1,0 +1,324 @@
+﻿@using Microsoft.AspNetCore.Html
+@model List<ecommerce.Models.Produto>
+
+@{
+    int pagIndex = (int)ViewData["PagIndex"];
+    int totalPag = (int)ViewData["TotalPag"];
+    string buscar = (string)ViewData["Buscar"]!;
+    string coluna = (string)ViewData["Coluna"]!;
+    string ordPor = (string)ViewData["OrdPor"]!;
+
+    HtmlString getArrow(string tblColuna)
+    {
+        if (tblColuna != coluna) return new HtmlString("");
+        return new HtmlString(ordPor == "desc" ? "<i class='bi bi-arrow-down'></i>" : "<i class='bi bi-arrow-up'></i>");
+    }
+}
+
+<section class="antq-admin-wrap">
+
+    <div class="antq-admin-header">
+        <h2>Produtos</h2>
+        <a class="btn-pill" asp-controller="Produto" asp-action="Criar">Adicionar Produto</a>
+    </div>
+
+    <div class="antq-admin-card">
+        <div class="antq-toolbar">
+            <form class="antq-search" role="search">
+                <input type="search" name="buscar" value="@buscar" placeholder="Buscar produto" />
+                <button type="submit" id="submit">Buscar</button>
+            </form>
+        </div>
+
+        <script>
+            function sortTable(coluna) {
+                let ordPor = "desc";
+                let colunaAtual = "@coluna";
+                let ordemAtual = "@ordPor";
+                if (coluna === colunaAtual) ordPor = (ordemAtual === "asc") ? "desc" : "asc";
+                window.location.href = `?buscar=@buscar&coluna=${coluna}&ordPor=${ordPor}&pagIndex=1`;
+            }
+        </script>
+       <div class="table-responsive">
+            <table class="antq-table">
+                <thead>
+                    <tr>
+                        <th onclick="sortTable('Id')">ID @getArrow("Id")</th>
+                        <th onclick="sortTable('Nome')">NOME @getArrow("Nome")</th>
+                        <th onclick="sortTable('Categoria')">CATEGORIA @getArrow("Categoria")</th>
+                        <th>DESCRICAO</th>
+                        <th onclick="sortTable('Preco')">PREÇO @getArrow("Preco")</th>
+                        <th>ESTADO DE CONSERVAÇÃO</th>
+                        <th>IMAGEM</th>
+                        <th>AÇÃO</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var produto in Model)
+                    {
+                        <tr>
+                            <td>@produto.Id</td>
+                            <td class="col-nome">@produto.Nome</td>
+                            <td>@produto.Categoria</td>
+                            <td class="col-desc" title="@produto.Descricao">
+                                @((produto.Descricao?.Length > 120)
+                                    ? produto.Descricao.Substring(0, 120) + "…"
+                                    : produto.Descricao)
+                            </td>
+                            <td>@produto.Preco.ToString("C")</td>
+                            <td>@produto.EstadoConservacao</td> @* ajuste o nome da propriedade se for diferente *@
+                            <td>
+                                <img src="@Url.Content("~/img/" + (produto.Imagens.FirstOrDefault()?.Url ?? "placeholder.png"))" alt="@produto.Nome" />
+                            </td>
+                            <td class="col-acoes">
+                                <a class="chip" asp-controller="Produto" asp-action="Editar" asp-route-id="@produto.Id">Editar</a>
+                                <form asp-action="Deletar" asp-route-id="@produto.Id" method="post">
+                                    <button type="submit" class="chip chip-outline" onclick="return confirm('Tem certeza que deseja excluir este produto?')">Excluir</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            </div>
+
+
+        <nav class="antq-pager">
+            <ul>
+                @for (int i = 1; i <= totalPag; i++)
+                {
+                    var ativo = i == pagIndex ? "active" : "";
+                    <li class="@ativo">
+                        <a href="?pagIndex=@i&buscar=@buscar&coluna=@coluna&ordPor=@ordPor">@i</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</section>
+
+@section Styles {
+    <style>
+        :root {
+            --bg-parchment: #F3EDE1; /* fundo da página */
+            --card: #F7F1E6; /* cartão da lista */
+            --ink: #1a1a1a;
+            --muted: #6b6b6b;
+            --accent: #8a5f43; /* marrom dos botões */
+            --radius: 18px;
+            --shadow: 0 8px 18px rgba(0,0,0,.12);
+        }
+
+        .antq-table tbody td.col-desc{
+  max-width: 360px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color:#4b4b4b;
+        }
+
+        .antq-table tbody td.col-desc {
+            max-width: 360px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #4b4b4b;
+        }
+
+        .antq-admin-wrap {
+            background: var(--bg-parchment);
+            padding: 18px 10px 28px;
+            width: 1300px;
+            margin-left: -70px;
+        }
+
+        .antq-admin-header {
+            max-width: 1120px;
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .antq-admin-header h2 {
+                margin: 0;
+                font-family: "Cinzel","Cormorant Garamond",serif;
+                letter-spacing: .08rem;
+                color: var(--ink);
+                font-size: 1.25rem;
+            }
+
+        .btn-pill {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-family: "Cinzel","Cormorant Garamond",serif;
+            letter-spacing: .06rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,.12);
+        }
+
+            .btn-pill:hover {
+                transform: translateY(-1px);
+                color:white;
+            }
+
+        .antq-admin-card {
+            max-width: 1120px;
+            margin: 0 auto;
+            background: var(--card);
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px 18px 12px;
+        }
+
+        .antq-toolbar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 8px;
+        }
+
+        .antq-search {
+            display: flex;
+            gap: 8px;
+        }
+
+
+            .antq-search input {
+                border: 1px solid rgba(0,0,0,.15);
+                background: #efe9dd;
+                padding: 8px 10px;
+                border-radius: 10px;
+                outline: none;
+                width: 150px;
+            }
+
+            .antq-search button {
+                background: transparent;
+                border: 1px solid rgba(0,0,0,.25);
+                border-radius: 10px;
+                padding: 8px 12px;
+            }
+
+        #submit:hover {
+            transform: translateY(-1px);
+            }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .antq-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 14px;
+        }
+
+            .antq-table thead th {
+                text-transform: uppercase;
+                font-family: "Cinzel","Cormorant Garamond",serif;
+                letter-spacing: .06rem;
+                font-weight: 700;
+                color: var(--ink);
+                font-size: .92rem;
+                padding: 6px 12px;
+                cursor: pointer;
+                user-select: none;
+            }
+
+            .antq-table tbody tr {
+                background: #efe7d8;
+                border: 1px solid rgba(0,0,0,.08);
+                box-shadow: 0 2px 8px rgba(0,0,0,.06);
+            }
+
+            .antq-table tbody td {
+                padding: 12px 12px;
+                vertical-align: middle;
+                color: var(--ink);
+            }
+
+                .antq-table tbody td.col-nome {
+                    font-weight: 600;
+                }
+
+                .antq-table tbody td img {
+                    width: 72px;
+                    height: auto;
+                    border-radius: 8px;
+                    display: block;
+                }
+
+        .col-acoes {
+            white-space: nowrap;
+        }
+
+            .col-acoes form {
+                display: inline-block;
+                margin-left: 8px;
+            }
+
+        .chip {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #fff;
+            text-decoration: none;
+            font-size: .9rem;
+        }
+
+        .chip:hover {
+            transform: translateY(-1px);
+            color:white;
+        }
+
+        .chip-outline {
+            background: transparent;
+            color: var(--ink);
+            border: 1px solid rgba(0,0,0,.35);
+            padding: 6px 10px;
+            border-radius: 10px;
+        }
+
+            .chip-outline:hover {
+                background: #000;
+                color: #fff;
+                transform: translateY(-2px);
+            }
+
+        .antq-pager {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+            .antq-pager ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                gap: 6px;
+            }
+
+            .antq-pager li a {
+                display: inline-block;
+                padding: 6px 10px;
+                border: 1px solid rgba(0,0,0,.25);
+                border-radius: 8px;
+                text-decoration: none;
+                color: var(--ink);
+                background: #efe9dd;
+            }
+
+            .antq-pager li.active a {
+                background: #000;
+                color: #fff;
+                border-color: #000;
+            }
+    </style>
+}
