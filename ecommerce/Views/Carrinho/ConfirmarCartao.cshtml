@@ -13,7 +13,8 @@
 
             <div class="card-form">
                 <div class="row">
-                    <label class="lbl">Tipo
+                    <label class="lbl">
+                        Tipo
                         <select class="ipt" name="Tipo" required>
                             <option value="">Selecione…</option>
                             <option>Crédito</option>
@@ -21,41 +22,43 @@
                         </select>
                     </label>
 
-                    <label class="lbl">Nome do Titular
+                    <label class="lbl">
+                        Nome do Titular
                         <input class="ipt" name="NomeTitular" autocomplete="cc-name" required />
                     </label>
 
-                    <label class="lbl">Número do Cartão
+                    <label class="lbl">
+                        Número do Cartão
                         <input class="ipt" name="Numero" maxlength="19" inputmode="numeric" autocomplete="cc-number" placeholder="0000 0000 0000 0000" required />
+                        <div class="brand-row">
+                            <img id="cardBrandIcon" alt="" style="height:22px; display:none;" />
+                            <span id="cardBrandText" class="brand-text"></span>
+                        </div>
                     </label>
 
-                    <label class="lbl">Validade (MM/AA)
+                    <label class="lbl">
+                        Validade (MM/AA)
                         <input class="ipt" name="Validade" maxlength="5" placeholder="MM/AA" autocomplete="cc-exp" required />
                     </label>
 
-                    <label class="lbl">CVV
+                    <label class="lbl">
+                        CVV
                         <input class="ipt" name="CVV" maxlength="4" inputmode="numeric" autocomplete="cc-csc" required />
                     </label>
 
-                    <label class="lbl">Bandeira
-                        <select class="ipt" name="Bandeira" required>
-                            <option value="">Selecione…</option>
-                            <option>Visa</option>
-                            <option>Mastercard</option>
-                            <option>Elo</option>
-                            <option>Hipercard</option>
-                        </select>
+                    <!-- Bandeira agora é automática (hidden + display) -->
+                    <label class="lbl">
+                        Bandeira
+                        <input type="hidden" name="Bandeira" id="Bandeira" />
+                        <input class="ipt" id="BandeiraDisplay" placeholder="Detectaremos automaticamente" readonly />
                     </label>
                 </div>
 
                 <div class="btns">
-
-
                     <a class="btn-ghost"
                        href="@Url.Action("ConfirmPag", "Carrinho", new { pedidoId = ViewBag.PedidoId })">
                         Pagar agora
                     </a>
-
                 </div>
             </div>
         </div>
@@ -80,20 +83,89 @@
     </div>
 </form>
 
-@section Styles{
-<style>
-    :root{ --bg:#F3EDE1; --ink:#1b1b1b; --card:#F7F1E6; --accent:#8a5f43; --shadow:0 8px 18px rgba(0,0,0,.12); --radius:14px; }
-    body{ background:var(--bg); }
-    .pay-wrap{max-width:1100px;margin:24px auto;padding:0 16px;display:grid;grid-template-columns:1.3fr .7fr;gap:28px;}
-    .pay-left .title{font-family:"Cinzel","Cormorant Garamond",serif;letter-spacing:.12rem;margin:8px 0 10px;}
-    .card-form{background:var(--card);border:1px solid rgba(0,0,0,.08);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-    .lbl{display:flex;flex-direction:column;font-size:.92rem;color:var(--ink);}
-    .ipt{height:42px;border:none;border-radius:10px;background:#ece9e3;padding:0 12px;outline:none;}
-    .ipt:focus{box-shadow:0 0 0 2px rgba(0,0,0,.10) inset;}
-    .btns{display:flex;gap:12px;margin-top:14px;}
-    .btn-main{background:var(--accent);color:#fff;border:none;border-radius:12px;padding:10px 24px;box-shadow:0 4px 10px rgba(0,0,0,.12);cursor:pointer;}
-    .btn-main:hover{transform:translateY(-1px);}
+@section Styles {
+    <style>
+        :root {
+            --bg: #F3EDE1;
+            --ink: #1b1b1b;
+            --card: #F7F1E6;
+            --accent: #8a5f43;
+            --shadow: 0 8px 18px rgba(0,0,0,.12);
+            --radius: 14px;
+        }
+
+        body {
+            background: var(--bg);
+        }
+
+        .pay-wrap {
+            max-width: 1100px;
+            margin: 24px auto;
+            padding: 0 16px;
+            display: grid;
+            grid-template-columns: 1.3fr .7fr;
+            gap: 28px;
+        }
+
+        .pay-left .title {
+            font-family: "Cinzel","Cormorant Garamond",serif;
+            letter-spacing: .12rem;
+            margin: 8px 0 10px;
+        }
+
+        .card-form {
+            background: var(--card);
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 22px;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .lbl {
+            display: flex;
+            flex-direction: column;
+            font-size: .92rem;
+            color: var(--ink);
+        }
+
+        .ipt {
+            height: 42px;
+            border: none;
+            border-radius: 10px;
+            background: #ece9e3;
+            padding: 0 12px;
+            outline: none;
+        }
+
+            .ipt:focus {
+                box-shadow: 0 0 0 2px rgba(0,0,0,.10) inset;
+            }
+
+        .btns {
+            display: flex;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .btn-main {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,.12);
+            cursor: pointer;
+        }
+
+            .btn-main:hover {
+                transform: translateY(-1px);
+            }
 
         .btn-ghost {
             background: #8a5f43;
@@ -101,40 +173,177 @@
             border-radius: 12px;
             padding: 10px 22px;
             text-decoration: none;
-            color:white;
+            color: white;
         }
 
-        .btn-ghost:hover{
-            color: white;
-            transform: translateY(-1px);
+            .btn-ghost:hover {
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .pay-right .summary {
+            background: #fff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,.08);
+            padding: 18px;
+            position: sticky;
+            top: 20px;
         }
-    .pay-right .summary{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid rgba(0,0,0,.08);padding:18px;position:sticky;top:20px;}
-    .sum-row{display:flex;justify-content:space-between;margin:6px 0;}
-    .total strong{font-size:1.1rem;}
-    media (max-width: 900px){ .pay-wrap{grid-template-columns:1fr;gap:18px;} }
-</style>
+
+        .sum-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 6px 0;
+        }
+
+        .total strong {
+            font-size: 1.1rem;
+        }
+
+        /* Linha que mostra bandeira + texto */
+        .brand-row {
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: .85rem;
+            color: #555;
+        }
+
+        .brand-text {
+            font-weight: 500;
+        }
+
+        media (max-width: 900px) {
+            .pay-wrap
+
+        {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        }
+    </style>
 }
 
-@section Scripts{
-<script>
-(function(){
-    const numero = document.querySelector('input[name="Numero"]');
-    const validade = document.querySelector('input[name="Validade"]');
+@section Scripts {
+    <script>
+        (function () {
 
-    if (numero){
-        numero.addEventListener('input', e=>{
-            let v = e.target.value.replace(/\D/g,'').slice(0,16);
-            v = v.replace(/(\d{4})(?=\d)/g,'$1 ');
-            e.target.value = v;
-        });
-    }
-    if (validade){
-        validade.addEventListener('input', e=>{
-            let v = e.target.value.replace(/\D/g,'').slice(0,4);
-            if (v.length>=3) v = v.slice(0,2) + '/' + v.slice(2);
-            e.target.value = v;
-        });
-    }
-})();
-</script>
+            function getCardBrand(cardNumber) {
+                if (!cardNumber) return null;
+
+                // remove espaços e caracteres não numéricos
+                const digits = cardNumber.replace(/\D/g, '');
+                if (digits.length < 4) return null;
+
+                // --- Elo (testa antes de Visa) ---
+                const eloPrefixes = [
+                    "4011", "4312", "4389"
+                    // pode adicionar mais aqui se quiser
+                    // "451416", "457393", "504175", "5067", "5090"
+                ];
+                if (eloPrefixes.some(p => digits.startsWith(p))) {
+                    return "Elo";
+                }
+
+                // --- American Express ---
+                if (digits.startsWith("34") || digits.startsWith("37")) {
+                    return "American Express";
+                }
+
+                // --- Hipercard ---
+                if (digits.startsWith("6062")) {
+                    return "Hipercard";
+                }
+
+                // --- Mastercard (51–55 ou 2221–2720) ---
+                const first2 = parseInt(digits.substring(0, 2), 10);
+                const first4 = digits.length >= 4 ? parseInt(digits.substring(0, 4), 10) : -1;
+
+                if ((first2 >= 51 && first2 <= 55) || (first4 >= 2221 && first4 <= 2720)) {
+                    return "Mastercard";
+                }
+
+                // --- Visa (começa com 4) ---
+                if (digits.startsWith("4")) {
+                    return "Visa";
+                }
+
+                return null;
+            }
+
+            const numero = document.querySelector('input[name="Numero"]');
+            const validade = document.querySelector('input[name="Validade"]');
+            const brandHidden = document.getElementById('Bandeira');
+            const brandDisplay = document.getElementById('BandeiraDisplay');
+            const brandIcon = document.getElementById('cardBrandIcon');
+            const brandText = document.getElementById('cardBrandText');
+
+            if (numero) {
+                numero.addEventListener('input', e => {
+                    // máscara do cartão
+                    let v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                    v = v.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    e.target.value = v;
+
+                    // detecção da bandeira
+                    const brand = getCardBrand(v);
+
+                    if (!brand) {
+                        if (brandHidden) brandHidden.value = "";
+                        if (brandDisplay) brandDisplay.value = "";
+                        if (brandIcon) {
+                            brandIcon.style.display = "none";
+                            brandIcon.src = "";
+                        }
+                        if (brandText) brandText.textContent = "";
+                        return;
+                    }
+
+                    if (brandHidden) brandHidden.value = brand;
+                    if (brandDisplay) brandDisplay.value = brand;
+                    if (brandText) brandText.textContent = brand;
+
+                    if (brandIcon) {
+                        let iconPath = "";
+
+                        switch (brand) {
+                            case "Visa":
+                                iconPath = "/img/cards/visa.png";
+                                break;
+                            case "Mastercard":
+                                iconPath = "/img/cards/mastercard.png";
+                                break;
+                            case "Elo":
+                                iconPath = "/img/cards/elo.png";
+                                break;
+                            case "American Express":
+                                iconPath = "/img/cards/amex.png";
+                                break;
+                            case "Hipercard":
+                                iconPath = "/img/cards/hipercard.png";
+                                break;
+                        }
+
+                        if (iconPath) {
+                            brandIcon.src = iconPath;
+                            brandIcon.style.display = "inline-block";
+                        } else {
+                            brandIcon.style.display = "none";
+                        }
+                    }
+                });
+            }
+
+            if (validade) {
+                validade.addEventListener('input', e => {
+                    let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                    if (v.length >= 3) v = v.slice(0, 2) + '/' + v.slice(2);
+                    e.target.value = v;
+                });
+            }
+        })();
+    </script>
 }

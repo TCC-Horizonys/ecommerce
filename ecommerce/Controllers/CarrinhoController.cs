@@ -2,6 +2,7 @@
 using ecommerce.Repository;
 using ecommerce.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq; // 👈 necessário para usar .Where e .Any
 
 namespace ecommerce.Controllers
 {
@@ -58,7 +59,6 @@ namespace ecommerce.Controllers
                 .ObterItensCarrinho(Request, Response, _produtoRepository)
                 ?? new List<ItemPedido>();
 
-        
             foreach (var it in itensCarrinho)
                 it.Imagem ??= it.Produto?.Imagens?.FirstOrDefault();
 
@@ -194,6 +194,10 @@ namespace ecommerce.Controllers
 
             int usuarioId = Convert.ToInt32(usuarioIdStr);
             cartao.UsuarioId = usuarioId;
+
+            // 👇 Detecta e seta a bandeira do cartão aqui
+            // Ajuste "Numero" e "Bandeira" se no seu model tiverem nomes diferentes.
+            cartao.Bandeira = DetectarBandeiraCartao(cartao.Numero);
 
             if (!ModelState.IsValid)
             {
@@ -508,6 +512,55 @@ namespace ecommerce.Controllers
         {
             ViewBag.PedidoId = pedidoId;
             return View("ConfirmPag");
+        }
+
+        // ==========================================
+        // Helper para detectar a bandeira do cartão
+        // ==========================================
+        private static string? DetectarBandeiraCartao(string? numeroCartao)
+        {
+            if (string.IsNullOrWhiteSpace(numeroCartao))
+                return null;
+
+            // Mantém só dígitos
+            var digits = new string(numeroCartao.Where(char.IsDigit).ToArray());
+            if (digits.Length < 4)
+                return null;
+
+            // --- Elo (testar antes de Visa) ---
+            var eloPrefixes = new[]
+            {
+                "4011", "4312", "4389"
+                // Você pode adicionar mais BINs de Elo aqui se quiser
+                // "451416", "457393", "504175", "5067", "5090", etc.
+            };
+
+            if (eloPrefixes.Any(p => digits.StartsWith(p)))
+                return "Elo";
+
+            // --- American Express ---
+            if (digits.StartsWith("34") || digits.StartsWith("37"))
+                return "American Express";
+
+            // --- Hipercard ---
+            if (digits.StartsWith("6062"))
+                return "Hipercard";
+
+            // --- Mastercard (51–55 ou 2221–2720) ---
+            if (digits.Length >= 2)
+            {
+                var first2 = int.Parse(digits.Substring(0, 2));
+                var first4 = digits.Length >= 4 ? int.Parse(digits.Substring(0, 4)) : -1;
+
+                if ((first2 >= 51 && first2 <= 55) || (first4 >= 2221 && first4 <= 2720))
+                    return "Mastercard";
+            }
+
+            // --- Visa ---
+            if (digits.StartsWith("4"))
+                return "Visa";
+
+            return null;
         }
     }
 }

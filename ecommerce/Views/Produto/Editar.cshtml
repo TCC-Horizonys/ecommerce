@@ -1,160 +1,279 @@
 ﻿@model ecommerce.Models.Produto
 
-<div class="row">
-    <div class="col-md-8 mx-auto rounded border p-3">
-        <h2 class="text-center mb-5">Editar Produto</h2>
+@section Styles {
+    <style>
+        :root {
+            --bg: #F5EEDF; /* parchment */
+            --panel: #F3E8D7; /* card */
+            --ink: #2b2b2b;
+            --muted: #7a6f66;
+            --pill: #8a5f43;
+            --pill-dark: #6f4a36;
+            --radius: 16px;
+            --shadow: 0 10px 22px rgba(0,0,0,.12);
+        }
 
+        .wrap-edit {
+            background: var(--bg);
+            padding: 24px 12px;
+            border-radius: var(--radius);
+        }
 
-        <form asp-action="Editar" method="post" enctype="multipart/form-data">
-            <input type="hidden" asp-for="Id" />
+        .card-edit {
+            background: var(--panel);
+            border: 1px solid rgba(0,0,0,.06);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
 
-            <div class="row mb-3">
-                <label class="col-sm-4 col-form-label">Id</label>
-                <div class="col-sm-8">
-                    <input class="form-control-plaintext" readonly value="@Model.Id">
-                </div>
-            </div>
+        .title-edit {
+            font-family: "Cinzel","Cormorant Garamond",Georgia,serif;
+            letter-spacing: .12rem;
+            color: var(--ink);
+        }
 
-            <div class="row mb-3">
-                <label for="Nome" class="col-sm-4 col-form-label">Nome</label>
-                <div class="col-sm-8">
-                    <input id="Nome" class="form-control" asp-for="Nome">
-                    <span asp-validation-for="Nome" class="text-danger"></span>
-                </div>
-            </div>
+        .label {
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: .06rem;
+            font-size: .8rem;
+        }
 
-            <div class="row mb-3">
-                <label for="Categoria" class="col-sm-4 col-form-label">Categoria</label>
-                <div class="col-sm-8">
-                    <select id="Categoria" name="Categoria" class="form-select" asp-for="Categoria">
-                        <option value='Roupa'>Roupa</option>
-                        <option value='Arte'>Arte</option>
-                        <option value='Movel'>Móvel</option>
-                        <option value='Joia'>Jóias</option>
-                    </select>
-                </div>
-            </div>
+        .form-control, .form-select {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,.12);
+            border-radius: 12px;
+        }
 
-            <div class="row mb-3">
-                <label for="Preco" class="col-sm-4 col-form-label">Preço (R$)</label>
-                <div class="col-sm-8">
-                    <input id="Preco" name="Preco" asp-for="Preco" class="form-control" type="text" placeholder="0,00" />
-                    <span asp-validation-for="Preco" class="text-danger"></span>
-                </div>
-            </div>
+            .form-control:focus, .form-select:focus {
+                box-shadow: 0 0 0 .2rem rgba(0,0,0,.04);
+                border-color: #cab7a5;
+            }
 
-            <div class="row mb-3">
-                <label for="Descricao" class="col-sm-4 col-form-label">Estado de Conservação</label>
-                <div class="col-sm-8">
-                    <textarea id="Descricao" name="Descricao" class="form-control" asp-for="EstadoConservacao"></textarea>
-                    <span asp-validation-for="EstadoConservacao" class="text-danger"></span>
-                </div>
-            </div>
+        .btn-capsule {
+            background: var(--pill);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: .6rem 1.1rem;
+            font-weight: 600;
+            box-shadow: 0 6px 18px rgba(0,0,0,.08);
+        }
 
-            <div class="row mb-3">
-            @foreach (var img in Model.Imagens.OrderBy(i => i.OrdemImagem))
-            {
-                    <div class="card" data-imagem-id="@img.ImagemId" style="width: 10rem;">
-                        <img src="@Url.Content("~/img/" + img.Url)" class="card-img-top" alt="Imagem do produto">
-                        <div class="card-body text-center">
-                            <button type="button" class="btn btn-sm btn-danger mt-1" onclick="removerImagem(@img.ImagemId)">
-                                Remover
-                            </button>
+            .btn-capsule:hover {
+                background: var(--pill-dark);
+                color: #fff;
+            }
+
+        .btn-outline-capsule {
+            border: 2px solid var(--pill);
+            color: var(--pill);
+            background: transparent;
+            border-radius: 999px;
+            padding: .55rem 1.1rem;
+            font-weight: 600;
+        }
+
+            .btn-outline-capsule:hover {
+                background: var(--pill);
+                color: #fff;
+            }
+
+        /* galeria de imagens */
+        .grid-img {
+            display: grid;
+            grid-template-columns: repeat(auto-fill,minmax(120px,1fr));
+            gap: 12px;
+        }
+
+        .img-card {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: 12px;
+            box-shadow: 0 6px 16px rgba(0,0,0,.06);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .img-card img {
+                width: 100%;
+                height: 120px;
+                object-fit: cover;
+                display: block;
+            }
+
+            .img-card .img-actions {
+                padding: 8px;
+            }
+
+        .badge-soft {
+            background: #fff;
+            border: 1px solid rgba(0,0,0,.08);
+            border-radius: 999px;
+            padding: .25rem .6rem;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        .help-tiny {
+            font-size: .8rem;
+            color: var(--muted);
+        }
+    </style>
+}
+
+<div class="wrap-edit">
+    <div class="container px-2 px-md-3">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h3 class="title-edit m-0">Editar Produto</h3>
+            <a class="btn btn-outline-capsule" asp-controller="Produto" asp-action="Index">Voltar</a>
+        </div>
+
+        <div class="card-edit p-3 p-md-4">
+            <form asp-action="Editar" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-3">
+                    <div class="col-12 col-lg-8">
+                        <!-- ID e Data -->
+                        <div class="row mb-2">
+                            <div class="col-sm-4 label">Id</div>
+                            <div class="col-sm-8">
+                                <input class="form-control-plaintext" readonly value="@Model.Id" />
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-4 label">Data Criação</div>
+                            <div class="col-sm-8">
+                                <span class="badge-soft">@Model.DataCriada:dd/MM/yyyy</span>
+                            </div>
+                        </div>
+
+                        <!-- Nome -->
+                        <div class="row mb-3">
+                            <label for="Nome" class="col-sm-4 col-form-label label">Nome</label>
+                            <div class="col-sm-8">
+                                <input id="Nome" class="form-control" asp-for="Nome" />
+                                <span asp-validation-for="Nome" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Categoria -->
+                        <div class="row mb-3">
+                            <label for="Categoria" class="col-sm-4 col-form-label label">Categoria</label>
+                            <div class="col-sm-8">
+                                <select id="Categoria" class="form-select" asp-for="Categoria">
+                                    <option value="Roupa">Roupa</option>
+                                    <option value="Arte">Arte</option>
+                                    <option value="Movel">Móvel</option>
+                                    <option value="Joia">Jóias</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Preço -->
+                        <div class="row mb-3">
+                            <label for="Preco" class="col-sm-4 col-form-label label">Preço (R$)</label>
+                            <div class="col-sm-8">
+                                <input id="Preco" asp-for="Preco" class="form-control" type="text" placeholder="0,00" />
+                                <div class="help-tiny mt-1">Digite apenas números; a vírgula é inserida automaticamente.</div>
+                                <span asp-validation-for="Preco" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Estado de Conservação -->
+                        <div class="row mb-3">
+                            <label for="EstadoConservacao" class="col-sm-4 col-form-label label">Estado de Conservação</label>
+                            <div class="col-sm-8">
+                                <textarea id="EstadoConservacao" class="form-control" asp-for="EstadoConservacao" rows="4"></textarea>
+                                <span asp-validation-for="EstadoConservacao" class="text-danger"></span>
+                            </div>
                         </div>
                     </div>
-                }
-            </div>
 
-            <div class="row mb-3">
-                <label for="imagemArquivo" class="col-sm-4 col-form-label">Imagem</label>
-                <div class="col-sm-8">
-                    <input id="imagensArquivo" type="file" class="form-control" name="imagensArquivo" multiple accept="image/*">
-                    <span asp-validation-for="Imagens" class="text-danger"></span>
-                </div>
-            </div>
+                    <!-- Galeria à direita -->
+                    <div class="col-12 col-lg-4">
+                        <div class="label mb-2">Imagens atuais</div>
+                        <div class="grid-img mb-3">
+                            @foreach (var img in (Model.Imagens ?? new List<ecommerce.Models.ProdutoImagem>()).OrderBy(i => i.OrdemImagem))
+                            {
+                                <div class="img-card" data-imagem-id="@img.ImagemId">
+                                    <img src="@Url.Content("~/img/" + img.Url)" alt="Imagem do produto" />
+                                    <div class="img-actions text-center">
+                                        <button type="button" class="btn btn-sm btn-danger" onclick="removerImagem(@img.ImagemId)">Remover</button>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.Imagens == null || !Model.Imagens.Any())
+                            {
+                                <div class="help-tiny">Sem imagens ainda.</div>
+                            }
+                        </div>
 
+                        <div class="mb-3">
+                            <label for="imagensArquivo" class="label mb-1 d-block">Adicionar imagens</label>
+                            <input id="imagensArquivo" type="file" class="form-control" name="imagensArquivo" multiple accept="image/*" />
+                            <div class="help-tiny mt-1">Você pode selecionar várias imagens de uma vez.</div>
+                            <span asp-validation-for="Imagens" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="row mb-3">
-                <label for="DataCriada" class="col-sm-4 col-form-label">Data Criação</label>
-                <div class="col-sm-8">
-                    <input id="DataCriada" class="form-control-plaintext" readonly value="@Model.DataCriada.ToString("dd/MM/yyyy")">
+                <div class="row mt-3">
+                    <div class="col-12 col-md-6 mb-2 mb-md-0">
+                        <button type="submit" class="btn btn-capsule w-100">Salvar alterações</button>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <a class="btn btn-outline-capsule w-100" asp-controller="Produto" asp-action="Index">Cancelar</a>
+                    </div>
                 </div>
-            </div>
-
-            <div class="row">
-                <div class="offset-sm-4 col-sm-4 d-grid">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-                <div class="col-sm-4 d-grid">
-                    <a class="btn btn-outline-primary" asp-controller="Produto" asp-action="Index" role="button">
-                        Cancel
-                    </a>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>
 
-
 @section Scripts {
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const precoInput = document.getElementById("Preco");
+        // máscara de preço em R$ com vírgula
+        (function () {
+          const precoInput = document.getElementById("Preco");
+          if (!precoInput) return;
 
-            if (!precoInput.value) {
-                precoInput.value = "0,00";
-            }
+          if (!precoInput.value) precoInput.value = "0,00";
 
-            precoInput.addEventListener("input", function (e) {
-                let value = e.target.value;
+          precoInput.addEventListener("input", function (e) {
+            let v = e.target.value.replace(/\D/g, "");
+            if (v === "") v = "0";
+            v = (parseInt(v, 10) / 100).toFixed(2).replace(".", ",");
+            e.target.value = v;
+          });
 
-                // Remove tudo que não for número
-                value = value.replace(/\D/g, "");
+          precoInput.addEventListener("blur", function (e) {
+            if (!e.target.value) e.target.value = "0,00";
+          });
+        })();
 
-                // Se vazio, assume 0
-                if (value === "") {
-                    value = "0";
-                }
+        // remover imagem (corrigido o seletor e com feedback simples)
+        function removerImagem(imagemId) {
+          if (!confirm("Deseja realmente remover esta imagem?")) return;
 
-                // Converte para centavos e insere a vírgula
-                value = (parseInt(value) / 100).toFixed(2);
+          const formData = new FormData();
+          formData.append("id", imagemId);
 
-                // Substitui ponto por vírgula
-                value = value.replace(".", ",");
-
-                e.target.value = value;
-            });
-
-            precoInput.addEventListener("blur", function (e) {
-                if (e.target.value === "" || e.target.value === "0") {
-                    e.target.value = "0,00";
-                }
-            });
-        });
-
-                function removerImagem(imagemId) {
-            if (!confirm("Deseja realmente remover esta imagem?")) return;
-
-            const formData = new FormData();
-            formData.append("id", imagemId); 
-
-            fetch('@Url.Action("RemoverImagem", "Produto")', {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
+          fetch('@Url.Action("RemoverImagem", "Produto")', { method: 'POST', body: formData })
+            .then(r => r.json())
             .then(data => {
-                if (data.sucesso) {
-                    const imgCard = document.querySelector(`[data-imagem-id='${imagemId}']`);
-                    if (imgCard) imgCard.remove(); // remove só o card da imagem
-                } else {
-                    alert(data.mensagem || "Erro ao remover imagem.");
-                }
+              if (data && data.sucesso) {
+                const card = document.querySelector(`[data-imagem-id='${imagemId}']`);
+                if (card) card.remove();
+              } else {
+                alert(data?.mensagem || "Erro ao remover imagem.");
+              }
             })
-            .catch(err => {
-                console.error(err);
-                alert("Erro de comunicação com o servidor.");
-            });
+            .catch(() => alert("Erro de comunicação com o servidor."));
         }
     </script>
 }
