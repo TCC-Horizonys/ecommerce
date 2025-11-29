@@ -3,8 +3,8 @@
 @section Styles {
     <style>
         :root {
-            --bg: #F5EEDF; /* parchment */
-            --panel: #F3E8D7; /* card */
+            --bg: #F5EEDF; 
+            --panel: #F3E8D7; 
             --ink: #2b2b2b;
             --muted: #7a6f66;
             --pill: #8a5f43;
@@ -237,7 +237,6 @@
 
 @section Scripts {
     <script>
-        // máscara de preço em R$ com vírgula
         (function () {
           const precoInput = document.getElementById("Preco");
           if (!precoInput) return;
@@ -256,7 +255,6 @@
           });
         })();
 
-        // remover imagem (corrigido o seletor e com feedback simples)
         function removerImagem(imagemId) {
           if (!confirm("Deseja realmente remover esta imagem?")) return;
 

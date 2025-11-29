@@ -17,9 +17,6 @@ namespace ecommerce.Repository
             _connectionString = connectionString;
         }
 
-        // ------------------------------------------------------------
-        // PEDIDO: INSERT (cabeçalho + itens)
-        // ------------------------------------------------------------
         public async Task<int> AdicionarPedido(Pedido pedido)
         {
             using var connection = new MySqlConnection(_connectionString);
@@ -53,10 +50,6 @@ VALUES (@PedidoId, @ProdutoId, @Quantidade, @PrecoUnitario);
 
             return pedidoId;
         }
-
-        // ------------------------------------------------------------
-        // PEDIDO: GET por Id (cliente)  -> itens + produto (Nome/Categoria)
-        // ------------------------------------------------------------
         public async Task<Pedido?> ObterPedidoPorId(int pedidoId)
         {
             using var connection = new MySqlConnection(_connectionString);
@@ -85,12 +78,6 @@ ORDER BY i.Id;";
             pedido.Itens = itens.ToList();
             return pedido;
         }
-
-        // ------------------------------------------------------------
-        // LISTA: pedidos do usuário (grid do cliente)
-        //   - inclui Método de Pagamento
-        //   - carrega Itens com Produto (Nome/Categoria) para exibir na grid
-        // ------------------------------------------------------------
         public async Task<List<Pedido>> ObterPedidosDoUsuario(int usuarioId)
         {
             using var connection = new MySqlConnection(_connectionString);
@@ -140,15 +127,9 @@ ORDER BY ip.PedidoId, ip.Id;";
             return lista;
         }
 
-        // alias mantido para compatibilidade de interface
         public async Task<List<Pedido>> ObterPedidosPorUsuario(int usuarioId)
             => await ObterPedidosDoUsuario(usuarioId);
 
-        // ------------------------------------------------------------
-        // ADMIN: lista de TODOS os pedidos (grid admin)
-        //   - carrega cabeçalho com Usuario/Endereco/Metodo/Cartao
-        //   - carrega Itens com Produto (Nome/Categoria)
-        // ------------------------------------------------------------
         public async Task<List<Pedido>> ObterTodosPedidos()
         {
             using var connection = new MySqlConnection(_connectionString);
@@ -216,9 +197,6 @@ ORDER BY ip.PedidoId, ip.Id;";
             return pedidos;
         }
 
-        // ------------------------------------------------------------
-        // ADMIN: pedido por Id (carrega imagens também)
-        // ------------------------------------------------------------
         public async Task<Pedido?> ObterPedidoPorIdAdm(int pedidoId)
         {
             using var connection = new MySqlConnection(_connectionString);
@@ -259,7 +237,6 @@ WHERE p.Id = @PedidoId;";
             var pedido = cab.FirstOrDefault();
             if (pedido == null) return null;
 
-            // Itens + Produto + Imagens (todas) – usando dicionário para agrupar
             const string sqlItens = @"
 SELECT 
     i.Id, i.PedidoId, i.ProdutoId, i.Quantidade, i.PrecoUnitario,
@@ -301,9 +278,6 @@ ORDER BY i.Id, pi.OrdemImagem;";
             return pedido;
         }
 
-        // ------------------------------------------------------------
-        // Atualizações de status de pagamento e pedido
-        // ------------------------------------------------------------
         public async Task<int> AtualizarStatusPagamento(Pedido pedido)
         {
             using var connection = new MySqlConnection(_connectionString);

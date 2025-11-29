@@ -46,7 +46,6 @@
                         <input class="ipt" name="CVV" maxlength="4" inputmode="numeric" autocomplete="cc-csc" required />
                     </label>
 
-                    <!-- Bandeira agora é automática (hidden + display) -->
                     <label class="lbl">
                         Bandeira
                         <input type="hidden" name="Bandeira" id="Bandeira" />
@@ -201,7 +200,6 @@
             font-size: 1.1rem;
         }
 
-        /* Linha que mostra bandeira + texto */
         .brand-row {
             margin-top: 6px;
             display: flex;
@@ -234,31 +232,24 @@
             function getCardBrand(cardNumber) {
                 if (!cardNumber) return null;
 
-                // remove espaços e caracteres não numéricos
                 const digits = cardNumber.replace(/\D/g, '');
                 if (digits.length < 4) return null;
 
-                // --- Elo (testa antes de Visa) ---
                 const eloPrefixes = [
                     "4011", "4312", "4389"
-                    // pode adicionar mais aqui se quiser
-                    // "451416", "457393", "504175", "5067", "5090"
                 ];
                 if (eloPrefixes.some(p => digits.startsWith(p))) {
                     return "Elo";
                 }
 
-                // --- American Express ---
                 if (digits.startsWith("34") || digits.startsWith("37")) {
                     return "American Express";
                 }
 
-                // --- Hipercard ---
                 if (digits.startsWith("6062")) {
                     return "Hipercard";
                 }
 
-                // --- Mastercard (51–55 ou 2221–2720) ---
                 const first2 = parseInt(digits.substring(0, 2), 10);
                 const first4 = digits.length >= 4 ? parseInt(digits.substring(0, 4), 10) : -1;
 
@@ -266,7 +257,6 @@
                     return "Mastercard";
                 }
 
-                // --- Visa (começa com 4) ---
                 if (digits.startsWith("4")) {
                     return "Visa";
                 }
@@ -283,12 +273,11 @@
 
             if (numero) {
                 numero.addEventListener('input', e => {
-                    // máscara do cartão
+                  
                     let v = e.target.value.replace(/\D/g, '').slice(0, 16);
                     v = v.replace(/(\d{4})(?=\d)/g, '$1 ');
                     e.target.value = v;
 
-                    // detecção da bandeira
                     const brand = getCardBrand(v);
 
                     if (!brand) {

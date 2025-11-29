@@ -51,38 +51,6 @@
             document.getElementById("CartSize").innerHTML = tamanhoCarrinho;
         }
 
-        // Função para aumentar a quantidade de um item no carrinho
-        function aumentar(id) {
-            let carrinho = obterCarrinhoDeCompras();
-
-            let quantidade = carrinho[id];
-            if (isNaN(quantidade)) {
-                carrinho[id] = 1;
-            } else {
-                carrinho[id] = Number(quantidade) + 1;
-            }
-
-            salvarCarrinho(carrinho);
-            location.reload();
-        }
-
-        // Função para diminuir a quantidade de um item no carrinho
-        function diminuir(id) {
-            let carrinho = obterCarrinhoDeCompras();
-
-            let quantidade = carrinho[id];
-            if (isNaN(quantidade)) {
-                return;
-            }
-
-            quantidade = Number(quantidade);
-
-            if (quantidade > 1) {
-                carrinho[id] = quantidade - 1;
-                salvarCarrinho(carrinho);
-                location.reload();
-            }
-        }
 
         // Função para remover um item do carrinho
         function remover(id) {
@@ -135,7 +103,6 @@
         .antq-icons .nav-link { position: relative; padding: .25rem .25rem .25rem .5rem; }
         .antq-badge { position: absolute; top: -4px; right: -8px; background:#fff; color:#000; border-radius: 999px; font-size:.65rem; padding: 0 .3rem; border: 1px solid rgba(0,0,0,.15); }
 
-        /* Barra de categorias */
         .antq-cats { background: var(--bg-parchment); }
         .antq-cats .nav { gap: 3rem; }
         .antq-cats .nav-link {color: #000000;}
@@ -324,14 +291,12 @@
             }
         </style>
 
-        <!-- Ícones das redes sociais -->
         <div id="redes">
             <a href="https://wa.me/55XXXXXXXXXX" target="_blank" aria-label="WhatsApp"><img src="~/img/wpp.png" alt="WhatsApp" /></a>
             <a href="https://www.instagram.com/horizonys_/" target="_blank" aria-label="Instagram"><img src="~/img/insta.png" alt="Instagram" /></a>
             <a href="https://www.linkedin.com/in/horizonys-enterprise-80244a358/" target="_blank" aria-label="LinkedIn"><img src="~/img/link2.png" alt="LinkedIn" /></a>
         </div>
 
-        <!-- Contatos -->
         <div id="cont">
             <div class="contact-line">
                 <img src="~/img/email2.png" alt="E-mail" />

@@ -24,11 +24,11 @@
 @section Styles {
     <style>
         :root {
-            --bg: #F5EEDF; /* parchment */
-            --panel: #F3E8D7; /* cards */
+            --bg: #F5EEDF; 
+            --panel: #F3E8D7; 
             --ink: #2b2b2b;
             --muted: #7a6f66;
-            --pill: #8a5f43; /* botões */
+            --pill: #8a5f43;
             --pill-dark: #6f4a36;
             --radius: 16px;
             --shadow: 0 12px 28px rgba(0,0,0,.14);
@@ -114,8 +114,6 @@
             .link-edit:hover {
                 color: var(--pill-dark);
             }
-
-        /* tabela de itens */
         .tbl {
             --bs-table-bg: transparent;
         }
@@ -187,7 +185,6 @@
         </div>
 
         <div class="row g-3 mb-2">
-            <!-- Pedido -->
             <div class="col-12 col-lg-6">
                 <div class="card-soft p-3 p-md-4 h-100">
                     <h5 class="mb-3">Pedido</h5>
@@ -221,7 +218,6 @@
                 </div>
             </div>
 
-            <!-- Cliente -->
             <div class="col-12 col-lg-6">
                 <div class="card-soft p-3 p-md-4 h-100">
                     <h5 class="mb-3">Cliente</h5>
@@ -234,7 +230,6 @@
             </div>
         </div>
 
-        <!-- Itens -->
         <div class="card-soft p-2 p-md-3 mb-3">
             <div class="table-responsive">
                 <table class="table tbl align-middle mb-0">
@@ -280,7 +275,6 @@
             </div>
         </div>
 
-        <!-- Totais -->
         <div class="ms-auto totals">
             <div class="row">
                 <div class="col fw-bold">Subtotal:</div>
@@ -298,7 +292,6 @@
     </div>
 </div>
 
-<!-- MODAL Editar Status -->
 <div class="modal fade" id="StatusPedidoModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content soft-modal">
@@ -328,7 +321,6 @@
 
 @section Scripts {
     <script>
-        // Preenche a modal com o status atual
         document.querySelectorAll('.editar-status').forEach(el=>{
           el.addEventListener('click', e=>{
             const id = el.getAttribute('data-id');

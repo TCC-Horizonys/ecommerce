@@ -181,7 +181,6 @@
             $('#CPF').mask('000.000.000-00');
 
             $('#perfilForm').on('submit', function () {
-                // Remove máscara antes de enviar
                 $('#Telefone').val($('#Telefone').val().replace(/\D/g, ''));
                 $('#CPF').val($('#CPF').val().replace(/\D/g, ''));
             });

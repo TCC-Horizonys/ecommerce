@@ -23,7 +23,6 @@
                 @foreach (var item in Model.Itens)
                 {
                     <article class="cart-card">
-                        <!-- thumb -->
                         <a asp-controller="Loja"
                            asp-action="Detalhes"
                            asp-route-id="@item.Produto.Id"
@@ -33,7 +32,6 @@
                                  alt="@item.Produto.Nome" />
                         </a>
 
-                        <!-- infos -->
                         <a asp-controller="Loja"
                            asp-action="Detalhes"
                            asp-route-id="@item.Produto.Id"
@@ -42,10 +40,8 @@
                             <div class="pcat">CATEGORIA: @item.Produto.Categoria</div>
                         </a>
 
-                        <!-- preço -->
                         <div class="pprice">R$ @((item.PrecoUnitario * item.Quantidade).ToString("N2"))</div>
 
-                        <!-- remover -->
                         <form asp-controller="Carrinho" asp-action="Remover" method="post" class="remove-form">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="produtoId" value="@item.Produto.Id" />

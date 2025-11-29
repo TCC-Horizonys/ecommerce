@@ -2,7 +2,7 @@
 using ecommerce.Repository;
 using ecommerce.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq; // 👈 necessário para usar .Where e .Any
+using System.Linq; 
 
 namespace ecommerce.Controllers
 {
@@ -22,7 +22,6 @@ namespace ecommerce.Controllers
             _pedidoRepository = pedidoRepository;
         }
 
-        // Página do carrinho
         public async Task<IActionResult> Index()
         {
             var itensCarrinho = await AuxiliarCarrinho
@@ -195,8 +194,6 @@ namespace ecommerce.Controllers
             int usuarioId = Convert.ToInt32(usuarioIdStr);
             cartao.UsuarioId = usuarioId;
 
-            // 👇 Detecta e seta a bandeira do cartão aqui
-            // Ajuste "Numero" e "Bandeira" se no seu model tiverem nomes diferentes.
             cartao.Bandeira = DetectarBandeiraCartao(cartao.Numero);
 
             if (!ModelState.IsValid)
@@ -514,25 +511,20 @@ namespace ecommerce.Controllers
             return View("ConfirmPag");
         }
 
-        // ==========================================
-        // Helper para detectar a bandeira do cartão
-        // ==========================================
         private static string? DetectarBandeiraCartao(string? numeroCartao)
         {
             if (string.IsNullOrWhiteSpace(numeroCartao))
                 return null;
 
-            // Mantém só dígitos
             var digits = new string(numeroCartao.Where(char.IsDigit).ToArray());
             if (digits.Length < 4)
                 return null;
 
-            // --- Elo (testar antes de Visa) ---
+            // elo
             var eloPrefixes = new[]
             {
                 "4011", "4312", "4389"
-                // Você pode adicionar mais BINs de Elo aqui se quiser
-                // "451416", "457393", "504175", "5067", "5090", etc.
+                
             };
 
             if (eloPrefixes.Any(p => digits.StartsWith(p)))

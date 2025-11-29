@@ -200,7 +200,6 @@ namespace ecommerce.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Apaga todas as imagens associadas (se existirem)
             if (produto.Imagens != null && produto.Imagens.Any())
             {
                 foreach (var imagem in produto.Imagens)
@@ -222,7 +221,6 @@ namespace ecommerce.Controllers
                             }
                             catch (Exception ex)
                             {
-                                // Logar ou ignorar falha ao deletar imagem específica
                                 Console.WriteLine($"Erro ao deletar imagem {caminhoImagem}: {ex.Message}");
                             }
                         }
@@ -239,7 +237,7 @@ namespace ecommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> RemoverImagem(int id)
         {
-            var imagem = await _produtoRepository.ImagemPorId(id); // funciona com ImagemId
+            var imagem = await _produtoRepository.ImagemPorId(id); 
             if (imagem == null)
                 return Json(new { sucesso = false, mensagem = "Imagem não encontrada." });
 
