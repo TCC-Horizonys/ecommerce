@@ -10,7 +10,7 @@
 
 <a href="https://github.com/TCC-Horizonys/ecommerce/wiki/Reposit%C3%B3rios">Repositórios</a>
 
-<a href="https://github.com/TCC-Horizonys/ecommerce/wiki/Views">Viewa</a>
+<a href="https://github.com/TCC-Horizonys/ecommerce/wiki/Views">Views</a>
 
 
 
