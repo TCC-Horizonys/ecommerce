@@ -4,11 +4,13 @@
 
 <a href="https://github.com/MaluAlmeida/ecommerce/wiki">Saiba mais</a>
 
-<h2>Detalhamento de Telas</h2>
+<h2>Detalhamento do Desenvolvimento</h2>
 
-<a href="https://github.com/MaluAlmeida/ecommerce/wiki/%C3%81rea-do-Administrador">Área do Administrador</a>
+<a href="https://github.com/TCC-Horizonys/ecommerce/wiki/Controllers">Controllers</a>
 
-<a href="https://github.com/MaluAlmeida/ecommerce/wiki/%C3%81rea-do-Cliente">Área do Cliente</a>
+<a href="https://github.com/TCC-Horizonys/ecommerce/wiki/Reposit%C3%B3rios">Repositórios</a>
+
+<a href="https://github.com/TCC-Horizonys/ecommerce/wiki/Views">Viewa</a>
 
 
 
